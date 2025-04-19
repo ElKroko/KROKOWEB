@@ -95,6 +95,11 @@ export default function Home() {
       title: "Sobre Mí", 
       path: "/about", 
       description: "Conoce más sobre mi historia y trayectoria." 
+    },
+    { 
+      title: "Galería Inmersiva", 
+      path: "/gallery", 
+      description: "Experiencia audiovisual interactiva con arte y música." 
     }
   ];
 
@@ -113,7 +118,7 @@ export default function Home() {
         <section className="w-full py-20 px-4 gradient-bg text-white">
           <div className="container-custom flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-1/2 space-y-6">
-              <h1 className="text-5xl sm:text-7xl font-bold">KROKOWEB</h1>
+              <h1 className="text-5xl sm:text-7xl font-bold">Kroko</h1>
               <p className="text-xl">
                 Creador multidisciplinario enfocado en música, arte visual, programación, trading y desarrollo personal. 
                 Construyendo puentes entre la tecnología y la creatividad.
