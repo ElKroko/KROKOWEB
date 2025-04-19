@@ -1,102 +1,267 @@
-import Image from "next/image";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import Link from "next/link";
+import Placeholder from "@/components/ui/Placeholder";
+import { FaGithub, FaSoundcloud, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const sections = [
+    { 
+      title: "Música", 
+      path: "/music", 
+      description: "Mis composiciones, proyectos musicales y sonidos." 
+    },
+    { 
+      title: "Arte Visual", 
+      path: "/visual", 
+      description: "Diseño gráfico, ilustraciones y trabajos visuales." 
+    },
+    { 
+      title: "Programación", 
+      path: "/programming", 
+      description: "Desarrollo web, aplicaciones y soluciones tecnológicas." 
+    },
+    { 
+      title: "Trading", 
+      path: "/trading", 
+      description: "Análisis de mercados, estrategias y portafolio." 
+    },
+    { 
+      title: "EMED", 
+      path: "/emed", 
+      description: "Educación, meditación, ejercicio y dieta." 
+    },
+    { 
+      title: "Sobre Mí", 
+      path: "/about", 
+      description: "Conoce más sobre mi historia y trayectoria." 
+    }
+  ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  const socialLinks = [
+    { name: "GitHub", icon: <FaGithub size={24} />, url: "https://github.com/yourusername" },
+    { name: "SoundCloud", icon: <FaSoundcloud size={24} />, url: "https://soundcloud.com/yourusername" },
+    { name: "Twitter", icon: <FaTwitter size={24} />, url: "https://twitter.com/yourusername" },
+    { name: "Instagram", icon: <FaInstagram size={24} />, url: "https://instagram.com/yourusername" },
+    { name: "LinkedIn", icon: <FaLinkedin size={24} />, url: "https://linkedin.com/in/yourusername" },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-dark-bg text-dark-text">
+      <main className="flex-1 flex flex-col items-center w-full">
+        {/* Hero Section */}
+        <section className="w-full py-20 px-4 gradient-bg text-white">
+          <div className="container-custom flex flex-col lg:flex-row items-center gap-12">
+            <div className="lg:w-1/2 space-y-6">
+              <h1 className="text-5xl sm:text-7xl font-bold">KROKOWEB</h1>
+              <p className="text-xl">
+                Creador multidisciplinario enfocado en música, arte visual, programación, trading y desarrollo personal. 
+                Construyendo puentes entre la tecnología y la creatividad.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                {socialLinks.map((link, i) => (
+                  <a 
+                    key={i} 
+                    href={link.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-all"
+                    aria-label={link.name}
+                  >
+                    {link.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="lg:w-1/2 flex justify-center">
+              <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-white/20">
+                <Placeholder 
+                  width={256} 
+                  height={256} 
+                  text="Foto de Perfil" 
+                  bgColor="#374151" 
+                  style={{objectFit: "cover"}}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Música Section */}
+        <section className="w-full section-padding bg-dark-bg">
+          <div className="container-custom">
+            <h2 className="text-3xl font-bold mb-8 flex items-center">
+              <span className="mr-2">Música</span>
+              <Link href="/music" className="text-sm text-primary-light flex items-center">
+                <span className="mr-1">Ver todo</span>
+                <FiExternalLink />
+              </Link>
+            </h2>
+            <div className="mb-8 rounded-lg overflow-hidden shadow-lg">
+              <iframe 
+                width="100%" 
+                height="300" 
+                scrolling="no" 
+                frameBorder="no" 
+                allow="autoplay" 
+                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/xklokon&color=%237C3AED&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"
+                className="w-full"
+              ></iframe>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="card p-6">
+                <h3 className="text-xl font-bold mb-3">Último Lanzamiento</h3>
+                <p className="mb-4 text-gray-300">Descripción breve de tu música más reciente y lo que significa para ti.</p>
+                <Link href="/music/latest">
+                  <Button variant="primary">Escuchar ahora</Button>
+                </Link>
+              </div>
+              <div className="card p-6">
+                <h3 className="text-xl font-bold mb-3">Proyectos Musicales</h3>
+                <p className="mb-4 text-gray-300">Colaboraciones, bandas y otros proyectos en los que participas.</p>
+                <Link href="/music/projects">
+                  <Button variant="outline">Explorar proyectos</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Programación Section */}
+        <section className="w-full section-padding bg-dark-bg/80">
+          <div className="container-custom">
+            <h2 className="text-3xl font-bold mb-8 flex items-center">
+              <span className="mr-2">Programación</span>
+              <Link href="/programming" className="text-sm text-primary-light flex items-center">
+                <span className="mr-1">Ver todo</span>
+                <FiExternalLink />
+              </Link>
+            </h2>
+            <div className="card p-6 shadow-lg">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <Placeholder 
+                  width="100%" 
+                  height={200} 
+                  text="GitHub Stats"
+                  bgColor="#1E2A3B" 
+                  className="w-full md:w-1/2 rounded-lg"
+                />
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold">Mis Proyectos Destacados</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-center">
+                      <FaGithub className="mr-2 text-primary-light" /> 
+                      <a href="https://github.com/yourusername/project1" target="_blank" rel="noopener noreferrer" className="text-primary-light hover:underline">
+                        project1 - Descripción corta
+                      </a>
+                    </li>
+                    <li className="flex items-center">
+                      <FaGithub className="mr-2 text-primary-light" /> 
+                      <a href="https://github.com/yourusername/project2" target="_blank" rel="noopener noreferrer" className="text-primary-light hover:underline">
+                        project2 - Descripción corta
+                      </a>
+                    </li>
+                    <li className="flex items-center">
+                      <FaGithub className="mr-2 text-primary-light" /> 
+                      <a href="https://github.com/yourusername/project3" target="_blank" rel="noopener noreferrer" className="text-primary-light hover:underline">
+                        project3 - Descripción corta
+                      </a>
+                    </li>
+                  </ul>
+                  <Link href="/programming">
+                    <Button variant="secondary" size="sm">
+                      Ver más proyectos
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Arte Visual Section */}
+        <section className="w-full section-padding bg-dark-bg">
+          <div className="container-custom">
+            <h2 className="text-3xl font-bold mb-8 flex items-center">
+              <span className="mr-2">Arte Visual</span>
+              <Link href="/visual" className="text-sm text-primary-light flex items-center">
+                <span className="mr-1">Ver todo</span>
+                <FiExternalLink />
+              </Link>
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                  <Placeholder 
+                    width="100%" 
+                    height="100%" 
+                    text={`Artwork ${item}`}
+                    bgColor="#2D3748" 
+                    textColor="#A0AEC0"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 text-center">
+              <Link href="/visual">
+                <Button variant="outline">Ver galería completa</Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Secciones del sitio */}
+        <section className="w-full section-padding bg-dark-bg/80">
+          <div className="container-custom">
+            <h2 className="text-3xl font-bold mb-8 text-center">Explora KROKOWEB</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {sections.map((section, index) => (
+                <Card 
+                  key={index}
+                  title={section.title}
+                  description={section.description}
+                >
+                  <Link href={section.path}>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                    >
+                      Explorar &rarr;
+                    </Button>
+                  </Link>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="py-8 text-center border-t border-gray-700 bg-dark-bg">
+        <div className="container-custom">
+          <div className="mb-6 flex justify-center gap-6">
+            {socialLinks.map((link, i) => (
+              <a 
+                key={i} 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-primary-light transition-colors"
+                aria-label={link.name}
+              >
+                {link.icon}
+              </a>
+            ))}
+          </div>
+          <div className="mb-4">
+            <Link href="/contact">
+              <Button variant="secondary" size="sm">
+                Contacto
+              </Button>
+            </Link>
+          </div>
+          <p className="text-gray-300 text-sm">© {new Date().getFullYear()} KROKOWEB - Todos los derechos reservados</p>
+        </div>
       </footer>
     </div>
   );
