@@ -2,9 +2,13 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import ImmersiveGallery from '@/components/gallery/ImmersiveGallery';
-import { FaVolumeUp, FaVolumeMute, FaMusic, FaInfoCircle } from 'react-icons/fa';
+import { FaVolumeUp, FaVolumeMute, FaInfoCircle } from 'react-icons/fa';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import { colors } from '@/styles/theme';
+
+// Para el fondo de cada panel (si necesitas acceder programáticamente)
+const panelBackground = `bg-primary-dark/80 backdrop-blur-md border border-primary-mid/30`;
 
 export default function GalleryPage() {
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -18,7 +22,7 @@ export default function GalleryPage() {
     { title: "T BUSKO", artist: "Kroko", url: "/audio/T BUSKO.mp3" },
   ];
   
-  // Lista de obras de arte (ahora con extensiones PNG)
+  // Lista de obras de arte
   const artworks = [
     { title: "Duality", imagePath: "/images/art/placeholder_1.png", description: "Exploración de la dualidad mediante formas complementarias" },
     { title: "Digital Genesis", imagePath: "/images/art/placeholder_2.png", description: "Representación abstracta del nacimiento de la era digital" },
@@ -35,12 +39,12 @@ export default function GalleryPage() {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full h-screen overflow-hidden bg-primary-dark">
       {/* Botones de control */}
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         <Button 
           onClick={() => setShowInfo(!showInfo)} 
-          variant="primary"
+          variant="secondary"
           className="rounded-full p-3"
           aria-label="Mostrar información"
         >
@@ -48,7 +52,7 @@ export default function GalleryPage() {
         </Button>
         <Button 
           onClick={() => setAudioEnabled(!audioEnabled)} 
-          variant="primary"
+          variant="accent"
           className="rounded-full p-3"
           aria-label={audioEnabled ? "Desactivar audio" : "Activar audio"}
         >
@@ -58,43 +62,29 @@ export default function GalleryPage() {
       
       {/* Panel de información */}
       {showInfo && (
-        <div className="absolute bottom-8 left-8 z-10 max-w-md bg-black/70 backdrop-blur-md p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-2 text-white">Galería Inmersiva</h2>
-          <p className="text-gray-300 mb-4">
-            Explora mi colección de arte visual mientras escuchas composiciones originales. 
-            Navega con el mouse, zoom con la rueda.
-          </p>
-          
-          {audioEnabled && currentTrack !== null && (
-            <div className="mt-4 p-3 bg-white/10 rounded-lg">
-              <h3 className="text-xl font-semibold text-white mb-1 flex items-center">
-                <FaMusic className="mr-2" />
-                {audioTracks[currentTrack].title}
-              </h3>
-              <p className="text-gray-400">
-                {audioTracks[currentTrack].artist}
-              </p>
-            </div>
-          )}
-          
-          <div className="mt-4 flex justify-between items-center">
-            <button 
-              className="text-primary-light text-sm hover:underline"
-              onClick={() => setShowInfo(false)}
-            >
-              Ocultar esta información
-            </button>
-            
-            <Link href="/">
-              <Button variant="secondary" size="sm">
-                Volver al inicio
-              </Button>
-            </Link>
-          </div>
+        <div className={`absolute bottom-8 left-8 z-10 max-w-md ${panelBackground} p-6 rounded-lg`}>
+          <h2 className="text-2xl font-bold text-primary-light mb-2">Galería Inmersiva</h2>
+          <p className="mb-4">Explora estas obras en un entorno 3D interactivo. Activa el audio para una experiencia completa.</p>
+          <ul className="text-sm space-y-1 text-gray-300">
+            <li>• Usa el ratón para rotar la vista</li>
+            <li>• Rueda para acercar/alejar</li>
+            <li>• Haz clic en las obras para ver detalles</li>
+          </ul>
         </div>
       )}
       
-      {/* Reproductor de audio (simplificado) */}
+      {/* Canvas 3D con la galería */}
+      <div className="w-full h-full">
+        <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Cargando experiencia inmersiva...</div>}>
+          <ImmersiveGallery
+            artworks={artworks}
+            audioEnabled={audioEnabled}
+            currentTrack={currentTrack}
+          />
+        </Suspense>
+      </div>
+      
+      {/* Reproductor de audio oculto */}
       {audioEnabled && (
         <audio 
           src={audioTracks[currentTrack].url}
@@ -103,22 +93,6 @@ export default function GalleryPage() {
           style={{ display: 'none' }}
         />
       )}
-      
-      {/* Galería 3D */}
-      <Suspense fallback={
-        <div className="w-full h-full flex items-center justify-center text-white">
-          <div className="text-center">
-            <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary-light border-r-transparent mb-4"></div>
-            <p className="text-xl">Cargando experiencia inmersiva...</p>
-          </div>
-        </div>
-      }>
-        <ImmersiveGallery 
-          artworks={artworks} 
-          audioEnabled={audioEnabled}
-          currentTrack={currentTrack}
-        />
-      </Suspense>
     </div>
   );
 }

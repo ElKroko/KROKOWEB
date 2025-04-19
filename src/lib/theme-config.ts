@@ -3,34 +3,29 @@ export const themeConfig = {
   // Colores principales
   colors: {
     primary: {
-      light: '#3B82F6', // blue-500
-      DEFAULT: '#2563EB', // blue-600
-      dark: '#1D4ED8', // blue-700
+      light: '#74B3CE',  // Azul claro
+      mid: '#508991',    // Verde azulado
+      dark: '#172A3A',   // Azul oscuro
     },
-    secondary: {
-      light: '#10B981', // emerald-500
-      DEFAULT: '#059669', // emerald-600
-      dark: '#047857', // emerald-700
-    },
-    accent: {
-      light: '#8B5CF6', // violet-500
-      DEFAULT: '#7C3AED', // violet-600
-      dark: '#6D28D9', // violet-700
-    },
+    secondary: '#004346', // Verde azul oscuro
+    accent: '#09BC8A',    // Verde vibrante
   },
   
   // Configuración de fuentes
   fonts: {
-    sans: '"Geist", sans-serif',
-    mono: '"Geist Mono", monospace',
+    sans: 'Geist, sans-serif',
+    mono: 'JetBrains Mono, monospace',
   },
   
   // Configuración del modo oscuro
   dark: {
-    background: '#121212',
-    text: '#F3F4F6',
-    card: '#1F2937',
-    border: '#374151',
-    muted: '#374151',
+    background: '#172A3A',     // Azul oscuro
+    surface: '#1c3140',        // Una variante ligeramente más clara del azul oscuro
+    border: '#508991',         // Verde azulado
+    text: {
+      primary: '#F3F4F6',      // Texto principal
+      secondary: '#D1D5DB',    // Texto secundario
+      muted: '#9CA3AF',        // Texto desenfocado
+    }
   }
 };

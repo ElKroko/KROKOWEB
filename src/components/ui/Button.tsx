@@ -1,90 +1,57 @@
-"use client";
+import React from 'react';
+import { colors } from '@/styles/theme';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
-import { ReactNode } from "react";
-import Link from "next/link";
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        primary: "bg-primary-light text-primary-dark hover:bg-primary-mid",
+        secondary: "bg-primary-mid text-white hover:bg-secondary",
+        accent: "bg-accent text-primary-dark hover:bg-accent/90",
+        ghost: "bg-transparent hover:bg-primary-dark/20 text-white",
+        outline: "border border-primary-mid bg-transparent hover:bg-primary-mid/10 text-white",
+        link: "text-primary-light underline-offset-4 hover:underline hover:text-accent",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-8 px-3 py-1 text-xs",
+        lg: "h-12 px-6 py-3 text-base",
+        icon: "h-9 w-9",
+      },
+      fullWidth: {
+        true: "w-full",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "default",
+      fullWidth: false,
+    },
+  }
+);
 
-type ButtonProps = {
-  children: ReactNode;
-  onClick?: () => void;
-  href?: string;
-  variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
-  fullWidth?: boolean;
-  disabled?: boolean;
-  className?: string;
-  type?: "button" | "submit" | "reset";
-};
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
 
-export default function Button({
-  children,
-  onClick,
-  href,
-  variant = "primary",
-  size = "md",
-  fullWidth = false,
-  disabled = false,
-  className = "",
-  type = "button",
-}: ButtonProps) {
-  const getBaseStyles = () => "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
-  
-  const getVariantStyles = () => {
-    switch (variant) {
-      case "primary":
-        return "bg-primary text-white hover:bg-primary-dark focus:ring-primary";
-      case "secondary":
-        return "bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary";
-      case "outline":
-        return "bg-transparent border border-primary-light text-primary-light hover:bg-primary/10 focus:ring-primary";
-      case "ghost":
-        return "bg-transparent hover:bg-primary/10 text-primary-light focus:ring-primary";
-      default:
-        return "bg-primary text-white hover:bg-primary-dark focus:ring-primary";
-    }
-  };
-  
-  const getSizeStyles = () => {
-    switch (size) {
-      case "sm":
-        return "text-sm py-1.5 px-3";
-      case "md":
-        return "text-base py-2 px-4";
-      case "lg":
-        return "text-lg py-2.5 px-5";
-      default:
-        return "text-base py-2 px-4";
-    }
-  };
-  
-  const buttonStyles = `
-    ${getBaseStyles()} 
-    ${getVariantStyles()} 
-    ${getSizeStyles()} 
-    ${fullWidth ? "w-full" : ""}
-    ${disabled ? "opacity-50 pointer-events-none" : ""}
-    ${className}
-  `;
-
-  if (href) {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, fullWidth, ...props }, ref) => {
     return (
-      <Link 
-        href={href} 
-        className={buttonStyles}
-        aria-disabled={disabled}
-      >
-        {children}
-      </Link>
+      <button
+        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
+        ref={ref}
+        {...props}
+      />
     );
   }
-  
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={buttonStyles}
-    >
-      {children}
-    </button>
-  );
-}
+);
+
+Button.displayName = "Button";
+
+export { Button, buttonVariants };
+export default Button;

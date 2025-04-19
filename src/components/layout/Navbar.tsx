@@ -34,7 +34,9 @@ export default function Navbar() {
 
   return (
     <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-      scrolled ? 'bg-dark-bg/95 backdrop-blur-sm py-3 shadow-lg' : 'bg-dark-bg/80 backdrop-blur-md py-5'
+      scrolled 
+        ? 'bg-primary-dark/95 backdrop-blur-sm py-3 shadow-lg border-b border-primary-mid/30' 
+        : 'bg-primary-dark/80 backdrop-blur-md py-5'
     }`}>
       <div className="container-custom flex justify-between items-center">
         {/* Logo */}
@@ -50,8 +52,8 @@ export default function Navbar() {
               href={item.path}
               className={`px-4 py-3 rounded-md text-sm font-medium transition-colors 
                 ${pathname === item.path 
-                  ? 'text-white bg-primary-dark/30' 
-                  : 'text-gray-300 hover:text-white hover:bg-primary-dark/20'}`}
+                  ? 'text-white bg-secondary/70' 
+                  : 'text-gray-300 hover:text-white hover:bg-primary-mid/30'}`}
             >
               <span className="flex items-center">
                 <span className="mr-2">{item.icon}</span>
@@ -85,13 +87,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Menú móvil - añadir más padding */}
+      {/* Menú móvil */}
       {isOpen && (
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="md:hidden bg-dark-bg/95 backdrop-blur-md"
+          className="md:hidden bg-primary-dark/95 backdrop-blur-md border-t border-primary-mid/30"
         >
           <div className="container-custom py-6">
             <nav className="flex flex-col space-y-3">
@@ -101,8 +103,8 @@ export default function Navbar() {
                   href={item.path}
                   className={`px-5 py-4 rounded-md text-base font-medium transition-colors flex items-center
                     ${pathname === item.path 
-                      ? 'text-white bg-primary-dark/30' 
-                      : 'text-gray-300 hover:text-white hover:bg-primary-dark/20'}`}
+                      ? 'text-white bg-secondary/70' 
+                      : 'text-gray-300 hover:text-white hover:bg-primary-mid/30'}`}
                   onClick={() => setIsOpen(false)}
                 >
                   <span className="mr-3">{item.icon}</span>

@@ -1,3 +1,5 @@
+@import './variables.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,6 +35,13 @@ body {
   }
 
   .gradient-bg {
-    @apply bg-gradient-to-br from-primary-dark to-accent-dark;
+    @apply bg-gradient-to-br from-primary-dark to-accent;
+  }
+
+  /* Corregir esta línea que causa el error */
+  .bg-gradient-custom {
+    @apply bg-gradient-to-r from-primary-light to-accent;
   }
 }
+
+/* Aquí puedes añadir estilos globales que utilicen las variables */

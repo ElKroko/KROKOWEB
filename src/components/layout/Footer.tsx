@@ -25,7 +25,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="bg-primary-dark text-gray-300 border-t border-primary-mid/30">
       <div className="container-custom py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo y descripción */}
@@ -66,8 +66,8 @@ export default function Footer() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center 
-                  text-gray-400 hover:bg-primary-dark hover:text-white transition-all"
+                  className="w-10 h-10 rounded-full bg-primary-dark/80 border border-primary-mid/50 flex items-center justify-center 
+                  text-gray-400 hover:bg-accent hover:border-accent hover:text-dark-bg transition-all"
                   aria-label={link.name}
                 >
                   {link.icon}
@@ -88,12 +88,12 @@ export default function Footer() {
         </div>
 
         {/* Barra inferior */}
-        <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center">
+        <div className="border-t border-primary-mid/30 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center">
           <p className="text-gray-500 text-sm">
             &copy; {year} KROKO. Todos los derechos reservados.
           </p>
           <p className="text-gray-500 text-sm mt-2 sm:mt-0 flex items-center">
-            Desarrollado con <FaHeart className="mx-1 text-red-500" size={14} /> en Chile
+            Desarrollado con <FaHeart className="mx-1 text-accent" size={14} /> en Chile
           </p>
         </div>
       </div>
