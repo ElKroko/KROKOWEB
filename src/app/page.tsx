@@ -454,33 +454,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <footer className="py-8 text-center border-t border-gray-700 bg-dark-bg">
-        <div className="container-custom">
-          <div className="mb-6 flex justify-center gap-6">
-            {socialLinks.map((link, i) => (
-              <a 
-                key={i} 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-300 hover:text-primary-light transition-colors"
-                aria-label={link.name}
-              >
-                {link.icon}
-              </a>
-            ))}
-          </div>
-          <div className="mb-4">
-            <Link href="/contact">
-              <Button variant="secondary" size="sm">
-                Contacto
-              </Button>
-            </Link>
-          </div>
-          <p className="text-gray-300 text-sm">© {new Date().getFullYear()} KROKOWEB - Todos los derechos reservados</p>
-        </div>
-      </footer>
     </div>
   );
 }

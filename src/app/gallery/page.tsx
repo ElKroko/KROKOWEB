@@ -1,98 +1,81 @@
 "use client";
 
-import { Suspense, useState, useEffect } from 'react';
-import ImmersiveGallery from '@/components/gallery/ImmersiveGallery';
-import { FaVolumeUp, FaVolumeMute, FaInfoCircle } from 'react-icons/fa';
-import Button from '@/components/ui/Button';
-import Link from 'next/link';
-import { colors } from '@/styles/theme';
-
-// Para el fondo de cada panel (si necesitas acceder programáticamente)
-const panelBackground = `bg-primary-dark/80 backdrop-blur-md border border-primary-mid/30`;
+import { useState, useEffect } from 'react';
+import ImmersiveShowcase from '@/components/gallery/ImmersiveShowcase';
+import { motion } from 'framer-motion';
 
 export default function GalleryPage() {
-  const [audioEnabled, setAudioEnabled] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0);
-  const [showInfo, setShowInfo] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Lista de pistas de audio
-  const audioTracks = [
-    { title: "BOTANIKAL", artist: "XKLOKON", url: "/audio/BOTANIKAL.mp3" },
-    { title: "BREAKINGALL", artist: "XKLOKON", url: "/audio/BREAKINGALL.mp3" },
-    { title: "T BUSKO", artist: "Kroko", url: "/audio/T BUSKO.mp3" },
-  ];
-  
-  // Lista de obras de arte
-  const artworks = [
-    { title: "Duality", imagePath: "/images/art/placeholder_1.png", description: "Exploración de la dualidad mediante formas complementarias" },
-    { title: "Digital Genesis", imagePath: "/images/art/placeholder_2.png", description: "Representación abstracta del nacimiento de la era digital" },
-    { title: "Quantum Field", imagePath: "/images/art/placeholder_3.png", description: "Visualización de campos cuánticos interconectados" },
+  // Datos de proyectos (estos podrían venir de una API o CMS)
+  const projects = [
+    {
+      id: "project-1",
+      title: "Exploración tridimensional",
+      description: "Una experiencia visual e interactiva que combina formas geométricas y gradientes para crear un efecto de profundidad y movimiento. Este proyecto fusiona diseño minimalista con técnicas de animación avanzadas.",
+      imagePath: "/images/art/placeholder_1.png",
+      category: "Arte digital",
+      technologies: ["Three.js", "WebGL", "GLSL", "React"],
+      url: "#"
+    },
+    {
+      id: "project-2",
+      title: "Secuencia armónica",
+      description: "Visualización generativa que responde a algoritmos matemáticos. Las formas y colores evolucionan creando composiciones que están en constante cambio pero siempre mantienen armonía visual.",
+      imagePath: "/images/art/placeholder_2.png",
+      category: "Visualización de datos",
+      technologies: ["D3.js", "Canvas API", "JavaScript", "SVG"],
+      url: "#"
+    },
+    {
+      id: "project-3",
+      title: "Nebulosa Fractal",
+      description: "Exploración de patrones fractales que imitan formaciones estelares. Este trabajo combina matemáticas complejas con estética cósmica para crear una experiencia inmersiva que evoca el espacio profundo.",
+      imagePath: "/images/art/placeholder_3.png",
+      category: "Arte generativo",
+      technologies: ["WebGL", "GLSL Shaders", "Fractal Mathematics"],
+      url: "#"
+    },
   ];
 
-  // Ocultar el panel de información después de 10 segundos
+  // Simulación de carga
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowInfo(false);
-    }, 10000);
+      setIsLoading(false);
+    }, 1500);
     
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <div className="relative w-full h-screen overflow-hidden bg-primary-dark">
-      {/* Botones de control */}
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        <Button 
-          onClick={() => setShowInfo(!showInfo)} 
-          variant="secondary"
-          className="rounded-full p-3"
-          aria-label="Mostrar información"
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-primary-dark z-50">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
         >
-          <FaInfoCircle size={20} />
-        </Button>
-        <Button 
-          onClick={() => setAudioEnabled(!audioEnabled)} 
-          variant="accent"
-          className="rounded-full p-3"
-          aria-label={audioEnabled ? "Desactivar audio" : "Activar audio"}
-        >
-          {audioEnabled ? <FaVolumeUp size={20} /> : <FaVolumeMute size={20} />}
-        </Button>
-      </div>
-      
-      {/* Panel de información */}
-      {showInfo && (
-        <div className={`absolute bottom-8 left-8 z-10 max-w-md ${panelBackground} p-6 rounded-lg`}>
-          <h2 className="text-2xl font-bold text-primary-light mb-2">Galería Inmersiva</h2>
-          <p className="mb-4">Explora estas obras en un entorno 3D interactivo. Activa el audio para una experiencia completa.</p>
-          <ul className="text-sm space-y-1 text-gray-300">
-            <li>• Usa el ratón para rotar la vista</li>
-            <li>• Rueda para acercar/alejar</li>
-            <li>• Haz clic en las obras para ver detalles</li>
-          </ul>
-        </div>
-      )}
-      
-      {/* Canvas 3D con la galería */}
-      <div className="w-full h-full">
-        <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Cargando experiencia inmersiva...</div>}>
-          <ImmersiveGallery
-            artworks={artworks}
-            audioEnabled={audioEnabled}
-            currentTrack={currentTrack}
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 2,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+            className="w-12 h-12 mb-4 mx-auto border-t-2 border-accent rounded-full"
           />
-        </Suspense>
+          <p className="text-white/80 text-sm">Cargando experiencia visual...</p>
+        </motion.div>
       </div>
-      
-      {/* Reproductor de audio oculto */}
-      {audioEnabled && (
-        <audio 
-          src={audioTracks[currentTrack].url}
-          autoPlay
-          loop
-          style={{ display: 'none' }}
-        />
-      )}
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-primary-dark">
+      <ImmersiveShowcase projects={projects} />
     </div>
   );
 }
