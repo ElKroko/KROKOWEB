@@ -1,23 +1,24 @@
 import { CSSProperties } from 'react';
 
-type PlaceholderProps = {
-  width?: number;
-  height?: number;
+interface PlaceholderProps {
+  width: number | string;
+  height: number | string;
   text?: string;
   bgColor?: string;
   textColor?: string;
   style?: CSSProperties;
   className?: string;
-};
+}
 
 export default function Placeholder({
-  width = 300,
-  height = 300,
+  width,
+  height,
   text = 'Placeholder',
   bgColor = '#1F2937',
   textColor = '#9CA3AF',
   style,
   className,
+  ...props
 }: PlaceholderProps) {
   return (
     <div
@@ -29,6 +30,7 @@ export default function Placeholder({
         color: textColor,
         ...style,
       }}
+      {...props}
     >
       <span className="text-lg font-medium">{text}</span>
     </div>

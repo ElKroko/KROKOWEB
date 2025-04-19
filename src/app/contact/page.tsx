@@ -16,15 +16,16 @@ export default function ContactPage() {
             <h2 className="text-2xl font-semibold mb-4">Conéctate conmigo</h2>
             <div className="space-y-3">
               {[
-                { platform: "Email", handle: "tu@email.com" },
-                { platform: "Twitter", handle: "@tuusuario" },
-                { platform: "Instagram", handle: "@tuusuario" },
-                { platform: "LinkedIn", handle: "linkedin.com/in/tuusuario" },
-                { platform: "GitHub", handle: "github.com/tuusuario" }
+                { platform: "Email", handle: "contacto@kroko.cl", href: "mailto:contacto@kroko.cl" },
+                { platform: "Twitter", handle: "@kryptokroks", href: "https://x.com/kryptokroks" },
+                { platform: "Instagram", handle: "@kroko.cl", href: "https://www.instagram.com/kroko.cl/" },
+                { platform: "LinkedIn", handle: "Vicente Perelli-Tassara", href: "https://www.linkedin.com/in/vicente-perelli-tassara-0b74991b5/" },
+                { platform: "GitHub", handle: "ElKroko", href: "https://github.com/ElKroko/" },
+                { platform: "SoundCloud", handle: "xklokon", href: "https://soundcloud.com/xklokon" }
               ].map((social, index) => (
                 <div key={index} className="flex items-center">
                   <span className="font-medium w-24">{social.platform}:</span>
-                  <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">
+                  <a href={social.href} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
                     {social.handle}
                   </a>
                 </div>

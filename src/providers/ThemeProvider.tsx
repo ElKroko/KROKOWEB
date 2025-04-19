@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect } from "react"
 import { themeConfig } from "@/lib/theme-config"
 
 type ThemeContextType = {
-  // Mantener el mismo tipo pero siempre usando 'dark'
+  // Usar aserción const en lugar de anotación literal
   theme: "dark"
   themeColors: typeof themeConfig.colors
   themeFonts: typeof themeConfig.fonts
@@ -14,8 +14,8 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // No necesitamos state ni toggleTheme si siempre será oscuro
-  const theme: "dark" = "dark"
+  // Usar as const en lugar de anotación de tipo
+  const theme = "dark" as const
 
   // Aplicar el modo oscuro al cargar
   useEffect(() => {
