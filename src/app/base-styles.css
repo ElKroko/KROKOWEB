@@ -1,5 +1,5 @@
 :root {
-  /* Importar colores desde el tema */
+  /* Variables del tema centralizadas - estos valores se actualizan desde ThemeProvider y AccentColorProvider */
   --color-primary-light: #74B3CE;
   --color-primary-mid: #508991;
   --color-primary-dark: #172A3A;
@@ -11,6 +11,19 @@
   --color-surface: #1c3140;
   --color-text: #F3F4F6;
   --color-border: #508991;
+
+  /* Variables específicas para AccentColorProvider */
+  --accent-color: var(--color-accent);
+  --bg-color: var(--color-bg);
+  --text-color: var(--color-text);
+
+  /* Typography */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --letter-spacing: 0.025em;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
 }
 
 body {
@@ -18,7 +31,7 @@ body {
   padding: 0;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans);
 }
 
 main {
@@ -26,11 +39,19 @@ main {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  padding-bottom: 30px;
 }
 
 section {
   width: 100%;
   padding: 4rem 1rem;
+  margin-block: 4rem;
+}
+
+@media (min-width: 768px) {
+  .section {
+    margin-block: 6rem;
+  }
 }
 
 .container {
@@ -38,14 +59,48 @@ section {
   margin: 0 auto;
 }
 
+/* Typography */
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   font-weight: bold;
+  letter-spacing: -0.025em;
+  line-height: var(--line-height-tight);
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
+/* Fluid Typography with clamp() */
+h1, .h1 {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: bold;
+}
+
+h2, .h2 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: bold;
+}
+
+h3, .h3 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 600;
+}
+
+h4, .h4 {
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+  font-weight: 600;
+}
+
+p, .body {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: normal;
+  letter-spacing: var(--letter-spacing);
+  line-height: var(--line-height-relaxed);
+}
+
+.lead {
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+  font-weight: normal;
+  letter-spacing: var(--letter-spacing);
+  line-height: var(--line-height-relaxed);
+}
 
 a {
   color: var(--color-primary-light);
@@ -54,10 +109,11 @@ a {
 }
 
 a:hover {
-  color: var(--color-accent);
+  color: var(--accent-color);
   text-decoration: none;
 }
 
+/* Component Styles */
 .card {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -66,7 +122,7 @@ a:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Actualizar estilos de botones con la nueva paleta */
+/* Button Styles */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -97,15 +153,16 @@ a:hover {
 }
 
 .btn-accent {
-  background-color: var(--color-accent);
+  background-color: var(--accent-color);
   color: var(--color-bg);
 }
 
 .btn-accent:hover {
-  background-color: color-mix(in srgb, var(--color-accent) 90%, black);
+  /* Usando la función color-mix para oscurecer el color de acento */
+  background-color: color-mix(in srgb, var(--accent-color) 90%, black);
 }
 
-/* Clases de utilidad para colores */
+/* Utility Classes */
 .bg-primary {
   background-color: var(--color-primary-light);
 }
@@ -115,7 +172,7 @@ a:hover {
 }
 
 .bg-accent {
-  background-color: var(--color-accent);
+  background-color: var(--accent-color);
 }
 
 .text-primary {
@@ -123,10 +180,27 @@ a:hover {
 }
 
 .text-accent {
-  color: var(--color-accent);
+  color: var(--accent-color);
 }
 
-/* Clases de utilidad para espaciado consistente */
+.border-accent {
+  border-color: var(--accent-color);
+}
+
+/* Hover variants */
+.hover\:text-accent:hover {
+  color: var(--accent-color);
+}
+
+.hover\:bg-accent:hover {
+  background-color: var(--accent-color);
+}
+
+.hover\:border-accent:hover {
+  border-color: var(--accent-color);
+}
+
+/* Layout utility classes */
 .page-container {
   @apply container px-4 mx-auto py-8;
 }
@@ -137,4 +211,150 @@ a:hover {
 
 .section-subtitle {
   @apply text-xl md:text-2xl font-semibold mb-4 text-primary-mid;
+}
+
+/* Grid Layout */
+.grid-content {
+  display: grid;
+  grid-template-columns: 1fr min(60ch, 100%) 1fr;
+  gap: 2rem;
+}
+
+.grid-content > * {
+  grid-column: 2;
+}
+
+.grid-content > .full-width {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* Animation and effects */
+.highlight-hover {
+  position: relative;
+  display: inline-block;
+}
+
+.highlight-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  transition: width 0.3s ease;
+}
+
+.highlight-hover:hover::after {
+  width: 100%;
+}
+
+/* Tooltip Bar Styles */
+.frame-bar-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background-color: var(--color-primary-dark);
+  border-top: 1px solid var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  z-index: 40;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.frame-bar-bottom:hover {
+  opacity: 1;
+  border-top-width: 2px;
+}
+
+.frame-bar-bottom.has-message {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.tooltip-message {
+  color: white;
+  padding: 0 1rem;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.frame-bar-bottom:hover .tooltip-message {
+  color: var(--accent-color);
+}
+
+/* Tooltip Container */
+.tooltip-bar-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+#tooltip-bar {
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+#tooltip-bar.show-message {
+  opacity: 1;
+}
+
+#tooltip-bar:not(.show-message) {
+  opacity: 0.8;
+}
+
+#tooltip-bar:hover {
+  opacity: 1;
+}
+
+/* Corner Tooltip */
+.corner-tooltip {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  z-index: 40;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  text-align: right;
+  padding: 6px 10px;
+  max-width: 320px;
+}
+
+.corner-tooltip:hover {
+  opacity: 1;
+}
+
+.corner-tooltip .tooltip-message {
+  color: var(--accent-color);
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  transition: color 0.3s ease;
+}
+
+.corner-tooltip:hover .tooltip-message {
+  color: var(--color-primary-light);
+}
+
+/* Color transition class */
+.color-transition * {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease !important;
+}
+
+/* Transition for elements that use accent-color directly */
+[style*="--accent-color"] {
+  transition: all 0.3s ease;
+}
+
+/* Transition for SVG elements */
+svg path, svg rect, svg circle {
+  transition: fill 0.3s ease, stroke 0.3s ease;
 }

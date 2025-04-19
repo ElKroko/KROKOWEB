@@ -1,23 +1,84 @@
 @import './variables.css';
+@import '../styles/color-system.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 243, 244, 246;
-  --background-start-rgb: 18, 18, 18;
-  --background-end-rgb: 18, 18, 18;
+  /* Common variables */
+  --accent-color: #74B3CE;
+  
+  /* Header specific colors */
+  --header-primary: #508991;
+  --header-secondary: #172A3A;
+  --header-accent: var(--accent-color);
+  --header-muted: #888888;
+  
+  /* Dynamic color variables for theme switching */
+  --bg: #ffffff;
+  --text: #000000;
+  --link: #000000;
+  --bg-image-opacity: 0;
+  
+  /* Typography settings */
+  --letter-spacing-wide: 0.2em;
+  --letter-spacing-wider: 0.3em;
+  
+  /* Animation durations */
+  --transition-slow: 0.5s;
+  --transition-medium: 0.3s;
+  --transition-fast: 0.15s;
+}
+
+:root[data-mode='kroko'] {
+  --bg-image-opacity: 0;
+}
+
+:root[data-mode='xklokon'] {
+  --bg-image-opacity: 0.1;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.5s, color 0.5s;
+  font-family: var(--font-sans);
+  letter-spacing: var(--letter-spacing);
+}
+
+a { 
+  color: var(--link);
+  transition: color 0.3s;
+}
+
+.bg-image { 
+  opacity: var(--bg-image-opacity);
+  transition: opacity 0.5s;
+}
+
+/* Sidebar specific styles */
+.sidebar {
+  transition: background-color 0.3s;
+}
+
+/* Page transition effects */
+.page-transition-enter {
+  opacity: 0;
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 @layer components {
@@ -38,10 +99,45 @@ body {
     @apply bg-gradient-to-br from-primary-dark to-accent;
   }
 
-  /* Corregir esta línea que causa el error */
   .bg-gradient-custom {
     @apply bg-gradient-to-r from-primary-light to-accent;
   }
+  
+  /* New classes for minimalist typographic design */
+  .text-accent-color {
+    color: var(--accent-color);
+  }
+  
+  /* Header specific color classes */
+  .text-primary {
+    color: var(--header-primary);
+  }
+  
+  .text-secondary {
+    color: var(--header-secondary);
+  }
+  
+  .text-accent {
+    color: var(--header-accent);
+  }
+  
+  .text-muted {
+    color: var(--header-muted);
+  }
+  
+  .tracking-widest {
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .tracking-superwide {
+    letter-spacing: var(--letter-spacing-wider);
+  }
+  
+  .hover-image {
+    @apply opacity-0 absolute transition-all duration-500;
+  }
+  
+  .hover-image-active {
+    @apply opacity-40;
+  }
 }
-
-/* Aquí puedes añadir estilos globales que utilicen las variables */

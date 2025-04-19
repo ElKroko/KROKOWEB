@@ -1,0 +1,348 @@
+/* Variables globales de colores */
+:root {
+  /* Sistema de triple color por sección (valores iniciales) */
+  --accent-strong: #09BC8A;  /* Color fuerte/principal */
+  --accent-bg: #EBF0FA;      /* Color de fondo */
+  --accent-comp: #F16F6E;    /* Color complementario */
+  --text-color: #000000;     /* Color de texto principal */
+  
+  /* Variables de compatibilidad para código existente */
+  --accent-color: var(--accent-strong);
+  --bg-color: var(--accent-bg);
+  
+  /* Modo de transición para cambios suaves */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Definiciones de color por sección */
+:root {
+  /* Home */
+  --home-strong: #ff6f61;
+  --home-bg: #fff1f0;
+  --home-comp: #d64541;
+  --home-text: #000000;
+  --home-bg-dark: #2a1414;
+  --home-text-dark: #fff1f0;
+
+  /* Code/Programming */
+  --code-strong: #88b04b;
+  --code-bg: #f0f4e6;
+  --code-comp: #6b8440;
+  --code-text: #000000;
+  --code-bg-dark: #1e2a12;
+  --code-text-dark: #f0f4e6;
+  
+  --programming-strong: #88b04b;
+  --programming-bg: #f0f4e6;
+  --programming-comp: #6b8440;
+  --programming-text: #000000;
+  --programming-bg-dark: #1e2a12;
+  --programming-text-dark: #f0f4e6;
+
+  /* Trade/Trading */
+  --trade-strong: #10B981;
+  --trade-bg: #e6f6f0;
+  --trade-comp: #0d9669;
+  --trade-text: #000000;
+  --trade-bg-dark: #0f2a22;
+  --trade-text-dark: #e6f6f0;
+  
+  --trading-strong: #10B981;
+  --trading-bg: #e6f6f0;
+  --trading-comp: #0d9669;
+  --trading-text: #000000;
+  --trading-bg-dark: #0f2a22;
+  --trading-text-dark: #e6f6f0;
+
+  /* Create (combinación de Art y Music) */
+  --create-strong: #8A4FFF;
+  --create-bg: #f2eeff;
+  --create-comp: #EC4899;
+  --create-text: #000000;
+  --create-bg-dark: #1a1032;
+  --create-text-dark: #f2eeff;
+
+  /* Me (anteriormente About) */
+  --me-strong: #F59E0B;
+  --me-bg: #fef3c7;
+  --me-comp: #c47d09;
+  --me-text: #000000;
+  --me-bg-dark: #2e230a;
+  --me-text-dark: #fef3c7;
+
+  /* Contact */
+  --contact-strong: #6366F1;
+  --contact-bg: #ede9fe;
+  --contact-comp: #4f46e5;
+  --contact-text: #000000;
+  --contact-bg-dark: #161738;
+  --contact-text-dark: #ede9fe;
+}
+
+/* Base styles for mode switching */
+body {
+  transition: 
+    background-color 0.5s ease, 
+    color 0.5s ease, 
+    font-family 0.3s ease;
+}
+
+/* Clase de transición para elementos que cambian de color */
+.color-transition {
+  transition: 
+    background-color 0.3s ease, 
+    color 0.3s ease, 
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Clases de utilidad para cada componente del triple color */
+.bg-accent-strong {
+  background-color: var(--accent-strong);
+  color: var(--text-color);
+}
+
+.bg-accent-bg {
+  background-color: var(--accent-bg);
+}
+
+.bg-accent-comp {
+  background-color: var(--accent-comp);
+  color: var(--accent-bg);
+}
+
+.text-accent-strong {
+  color: var(--accent-strong);
+}
+
+.text-accent-comp {
+  color: var(--accent-comp);
+}
+
+.border-accent-strong {
+  border-color: var(--accent-strong);
+}
+
+.border-accent-comp {
+  border-color: var(--accent-comp);
+}
+
+/* Clases hover */
+.hover\:bg-accent-strong:hover {
+  background-color: var(--accent-strong);
+  color: var(--text-color);
+}
+
+.hover\:bg-accent-comp:hover {
+  background-color: var(--accent-comp);
+  color: var(--accent-bg);
+}
+
+.hover\:text-accent-strong:hover {
+  color: var(--accent-strong);
+}
+
+.hover\:text-accent-comp:hover {
+  color: var(--accent-comp);
+}
+
+.hover\:border-accent-strong:hover {
+  border-color: var(--accent-strong);
+}
+
+.hover\:border-accent-comp:hover {
+  border-color: var(--accent-comp);
+}
+
+/* ======== PALETAS POR PÁGINA ======== */
+/* Página HOME (claro) */
+[data-page='home']:not([data-mode='xklokon']) {
+  --accent-strong: var(--home-strong);
+  --accent-bg: var(--home-bg);
+  --accent-comp: var(--home-comp);
+  --text-color: var(--home-text);
+  --accent-color: var(--home-strong);
+  --bg-color: var(--home-bg);
+  --bg: var(--home-bg);
+  --text: var(--home-text);
+  background-color: var(--home-bg);
+  color: var(--home-text);
+}
+
+/* Página HOME (oscuro - modo xklokon) */
+[data-page='home'][data-mode='xklokon'] {
+  --accent-strong: var(--home-strong);
+  --accent-bg: var(--home-bg-dark);
+  --accent-comp: var(--home-comp);
+  --text-color: var(--home-text-dark);
+  --accent-color: var(--home-strong);
+  --bg-color: var(--home-bg-dark);
+  --bg: var(--home-bg-dark);
+  --text: var(--home-text-dark);
+  background-color: var(--home-bg-dark);
+  color: var(--home-text-dark);
+}
+
+/* Página PROGRAMMING (claro) */
+[data-page='programming']:not([data-mode='xklokon']) {
+  --accent-strong: var(--programming-strong);
+  --accent-bg: var(--programming-bg);
+  --accent-comp: var(--programming-comp);
+  --text-color: var(--programming-text);
+  --accent-color: var(--programming-strong);
+  --bg-color: var(--programming-bg);
+  --bg: var(--programming-bg);
+  --text: var(--programming-text);
+  background-color: var(--programming-bg);
+  color: var(--programming-text);
+}
+
+/* Página PROGRAMMING (oscuro - modo xklokon) */
+[data-page='programming'][data-mode='xklokon'] {
+  --accent-strong: var(--programming-strong);
+  --accent-bg: var(--programming-bg-dark);
+  --accent-comp: var(--programming-comp);
+  --text-color: var(--programming-text-dark);
+  --accent-color: var(--programming-strong);
+  --bg-color: var(--programming-bg-dark);
+  --bg: var(--programming-bg-dark);
+  --text: var(--programming-text-dark);
+  background-color: var(--programming-bg-dark);
+  color: var(--programming-text-dark);
+}
+
+/* Página TRADING (claro) */
+[data-page='trading']:not([data-mode='xklokon']) {
+  --accent-strong: var(--trading-strong);
+  --accent-bg: var(--trading-bg);
+  --accent-comp: var(--trading-comp);
+  --text-color: var(--trading-text);
+  --accent-color: var(--trading-strong);
+  --bg-color: var(--trading-bg);
+  --bg: var(--trading-bg);
+  --text: var(--trading-text);
+  background-color: var(--trading-bg);
+  color: var(--trading-text);
+}
+
+/* Página TRADING (oscuro - modo xklokon) */
+[data-page='trading'][data-mode='xklokon'] {
+  --accent-strong: var(--trading-strong);
+  --accent-bg: var(--trading-bg-dark);
+  --accent-comp: var(--trading-comp);
+  --text-color: var(--trading-text-dark);
+  --accent-color: var(--trading-strong);
+  --bg-color: var(--trading-bg-dark);
+  --bg: var(--trading-bg-dark);
+  --text: var(--trading-text-dark);
+  background-color: var(--trading-bg-dark);
+  color: var(--trading-text-dark);
+}
+
+/* Página CREATE (claro) - combinación de ART y MUSIC */
+[data-page='create']:not([data-mode='xklokon']) {
+  --accent-strong: var(--create-strong);
+  --accent-bg: var(--create-bg);
+  --accent-comp: var(--create-comp);
+  --text-color: var(--create-text);
+  --accent-color: var(--create-strong);
+  --bg-color: var(--create-bg);
+  --bg: var(--create-bg);
+  --text: var(--create-text);
+  background-color: var(--create-bg);
+  color: var(--create-text);
+}
+
+/* Página CREATE (oscuro - modo xklokon) */
+[data-page='create'][data-mode='xklokon'] {
+  --accent-strong: var(--create-strong);
+  --accent-bg: var(--create-bg-dark);
+  --accent-comp: var(--create-comp);
+  --text-color: var(--create-text-dark);
+  --accent-color: var(--create-strong);
+  --bg-color: var(--create-bg-dark);
+  --bg: var(--create-bg-dark);
+  --text: var(--create-text-dark);
+  background-color: var(--create-bg-dark);
+  color: var(--create-text-dark);
+}
+
+/* Página ME (claro) - anteriormente ABOUT */
+[data-page='me']:not([data-mode='xklokon']) {
+  --accent-strong: var(--me-strong);
+  --accent-bg: var(--me-bg);
+  --accent-comp: var(--me-comp);
+  --text-color: var(--me-text);
+  --accent-color: var(--me-strong);
+  --bg-color: var(--me-bg);
+  --bg: var(--me-bg);
+  --text: var(--me-text);
+  background-color: var(--me-bg);
+  color: var(--me-text);
+}
+
+/* Página ME (oscuro - modo xklokon) */
+[data-page='me'][data-mode='xklokon'] {
+  --accent-strong: var(--me-strong);
+  --accent-bg: var(--me-bg-dark);
+  --accent-comp: var(--me-comp);
+  --text-color: var(--me-text-dark);
+  --accent-color: var(--me-strong);
+  --bg-color: var(--me-bg-dark);
+  --bg: var(--me-bg-dark);
+  --text: var(--me-text-dark);
+  background-color: var(--me-bg-dark);
+  color: var(--me-text-dark);
+}
+
+/* Página CONTACT (claro) */
+[data-page='contact']:not([data-mode='xklokon']) {
+  --accent-strong: var(--contact-strong);
+  --accent-bg: var(--contact-bg);
+  --accent-comp: var(--contact-comp);
+  --text-color: var(--contact-text);
+  --accent-color: var(--contact-strong);
+  --bg-color: var(--contact-bg);
+  --bg: var(--contact-bg);
+  --text: var(--contact-text);
+  background-color: var(--contact-bg);
+  color: var(--contact-text);
+}
+
+/* Página CONTACT (oscuro - modo xklokon) */
+[data-page='contact'][data-mode='xklokon'] {
+  --accent-strong: var(--contact-strong);
+  --accent-bg: var(--contact-bg-dark);
+  --accent-comp: var(--contact-comp);
+  --text-color: var(--contact-text-dark);
+  --accent-color: var(--contact-strong);
+  --bg-color: var(--contact-bg-dark);
+  --bg: var(--contact-bg-dark);
+  --text: var(--contact-text-dark);
+  background-color: var(--contact-bg-dark);
+  color: var(--contact-text-dark);
+}
+
+/* Tipografía por modo */
+/* Modo kroko: tipografía sans-serif minimalista */
+:root:not([data-mode='xklokon']) {
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-weight-normal: 300;
+  --font-weight-bold: 600;
+  --letter-spacing: 0.02em;
+}
+
+/* Modo xklokon: tipografía monoespaciada estilo terminal */
+:root[data-mode='xklokon'] {
+  --font-family: 'Fira Code', 'IBM Plex Mono', 'Courier New', monospace;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --letter-spacing: 0;
+}
+
+/* Aplica las fuentes según el modo */
+body, button, input, select, textarea {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--letter-spacing);
+}

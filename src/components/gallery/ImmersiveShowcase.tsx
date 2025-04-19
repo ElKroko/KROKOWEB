@@ -18,6 +18,8 @@ import { colors } from '@/styles/theme';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { FiArrowLeft, FiArrowRight, FiX, FiInfo, FiCode, FiMap } from 'react-icons/fi';
+import { useAccentColor } from '@/providers/AccentColorProvider';
+import Typography from '../ui/Typography';
 
 // Nuevos tipos de exhibición
 const SHOWCASE_TYPES = {
@@ -895,6 +897,7 @@ export default function ImmersiveShowcase({ projects }: ImmersiveShowcaseProps) 
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
+  const accentColor = useAccentColor();
   
   const currentProject = projects[currentIndex];
   
@@ -1108,8 +1111,8 @@ export default function ImmersiveShowcase({ projects }: ImmersiveShowcaseProps) 
               transition={{ duration: 0.3 }}
               className="absolute left-8 bottom-28 max-w-md bg-primary-dark/90 backdrop-blur-md p-6 rounded-lg border border-primary-mid/30 z-10"
             >
-              <h2 className="text-2xl font-bold text-primary-light mb-2">{currentProject.title}</h2>
-              <p className="text-sm text-white/80 mb-4">{currentProject.description}</p>
+              <Typography variant="h2" className="text-primary-light mb-2">{currentProject.title}</Typography>
+              <Typography variant="body1" className="text-white/80 mb-4">{currentProject.description}</Typography>
               
               {currentProject.url && (
                 <a 
