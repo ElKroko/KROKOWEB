@@ -58,14 +58,14 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   // Set the data-page attribute based on the current route
   useEffect(() => {
     const pageName = getPageNameFromPath(pathname);
-    document.documentElement.setAttribute('data-page', pageName);
+    document.documentElement.setAttribute('data-section', pageName);
     
     // También aplicar al body para mayor compatibilidad
-    document.body.setAttribute('data-page', pageName);
+    document.body.setAttribute('data-section', pageName);
   }, [pathname]);
 
   return (
-    <div className="min-h-screen flex color-transition">
+    <div className="min-h-screen flex">
       {/* Sidebar containing the logo and menu */}
       <Sidebar 
         menuItems={menuItems} 
@@ -73,7 +73,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       />
       
       {/* Main content area with left margin to accommodate the sidebar */}
-      <main className="flex-1 ml-[250px] min-h-screen color-transition">
+      <main className="flex-1 ml-[250px] min-h-screen">
         {children}
       </main>
       

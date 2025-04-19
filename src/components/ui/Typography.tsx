@@ -71,9 +71,9 @@ function getVariantClasses(variant: TypographyVariant): string {
     case 'h2':
       return 'font-bold tracking-tight text-[clamp(2rem,6vw,4rem)] leading-tight';
     case 'h3':
-      return 'font-semibold text-[clamp(1.5rem,4vw,2.5rem)] leading-snug';
+      return 'font-medium text-[clamp(1.5rem,4vw,2.5rem)] leading-snug';
     case 'h4':
-      return 'font-semibold text-[clamp(1.2rem,3vw,1.75rem)] leading-snug';
+      return 'font-medium text-[clamp(1.2rem,3vw,1.75rem)] leading-snug';
     case 'p':
       return 'text-[clamp(1rem,2.5vw,1.25rem)] leading-relaxed tracking-[0.02em]';
     case 'lead':
@@ -81,7 +81,7 @@ function getVariantClasses(variant: TypographyVariant): string {
     case 'small':
       return 'text-sm leading-relaxed';
     case 'caption':
-      return 'text-xs leading-relaxed text-gray-400';
+      return 'text-xs leading-relaxed opacity-70';
     default:
       return '';
   }

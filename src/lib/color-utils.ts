@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import colors from '@/styles/colorConfig';
 
 /**
  * Converts a hex color string to an RGB object
@@ -249,3 +250,53 @@ export function generateContrastColors(accentColor: string) {
     };
   }
 }
+
+/**
+ * Generates CSS dynamically from the color configuration
+ */
+export function generateColorCSS() {
+  // Generar CSS para colores de acento en modo kroko
+  let accentCSS = '';
+  Object.entries(colors.accent).forEach(([section, color]) => {
+    accentCSS += `
+:root[data-section='${section}'] {
+  --accent-color: ${color};
+}`;
+  });
+
+  // Generar CSS para fondos y acentos en modo xklokon
+  let darkCSS = '';
+  Object.entries(colors.darkBg).forEach(([section, bgColor]) => {
+    const accentColor = colors.accent[section as keyof typeof colors.accent];
+    darkCSS += `
+:root[data-mode='xklokon'][data-section='${section}'] {
+  --bg: ${bgColor};
+  --accent-color: ${accentColor};
+}`;
+  });
+
+  return {
+    accentCSS,
+    darkCSS
+  };
+}
+
+/**
+ * Retrieves the accent color for a given section
+ * @param section Section name
+ * @returns Accent color as a string
+ */
+export function getAccentColor(section: string): string {
+  return colors.accent[section as keyof typeof colors.accent] || colors.black;
+}
+
+/**
+ * Retrieves the dark background color for a given section
+ * @param section Section name
+ * @returns Dark background color as a string
+ */
+export function getDarkBgColor(section: string): string {
+  return colors.darkBg[section as keyof typeof colors.darkBg] || colors.black;
+}
+
+export default colors;

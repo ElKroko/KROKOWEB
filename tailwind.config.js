@@ -32,8 +32,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-sans)'],
-        mono: ['var(--font-mono)'],
+        sans: ['Consolas', 'Monaco', 'Menlo', 'monospace'],
+        mono: ['Consolas', 'Monaco', 'Menlo', 'monospace'],
       },
       typography: {
         DEFAULT: {

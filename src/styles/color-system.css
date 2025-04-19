@@ -346,3 +346,161 @@ body, button, input, select, textarea {
   font-weight: var(--font-weight-normal);
   letter-spacing: var(--letter-spacing);
 }
+
+/* color-system.css */
+/* Este archivo contiene los estilos de color dinámicos basados en los colores definidos en colorConfig.ts */
+
+/* ===== COLORES DE ACENTO POR SECCIÓN (MODO KROKO) ===== */
+:root[data-section='home'] {
+  --accent-color: #000000;
+}
+
+:root[data-section='art'] {
+  --accent-color: #ff5f8d;
+}
+
+:root[data-section='programming'], :root[data-section='code'] {
+  --accent-color: #42C5B9;
+}
+
+:root[data-section='trading'] {
+  --accent-color: #6fb46d;
+}
+
+:root[data-section='create'] {
+  --accent-color: #f9c74f;
+}
+
+:root[data-section='me'] {
+  --accent-color: #9c6edb;
+}
+
+:root[data-section='contact'] {
+  --accent-color: #4a5568;
+}
+
+:root[data-section='visual'] {
+  --accent-color: #ec4e20;
+}
+
+:root[data-section='music'] {
+  --accent-color: #dc2f02;
+}
+
+:root[data-section='gallery'] {
+  --accent-color: #8338ec;
+}
+
+/* ===== FONDOS Y ACENTOS POR SECCIÓN (MODO XKLOKON) ===== */
+:root[data-mode='xklokon'][data-section='home'] {
+  --bg: #000000;
+  --accent-color: #ffffff;
+  --card-bg: #0a0a0a;
+  --border-color: #333333;
+}
+
+:root[data-mode='xklokon'][data-section='art'] {
+  --bg: #7D3151;
+  --accent-color: #ff5f8d;
+  --card-bg: #8D4161;
+  --border-color: #AD6181;
+}
+
+:root[data-mode='xklokon'][data-section='programming'], 
+:root[data-mode='xklokon'][data-section='code'] {
+  --bg: #103A37;
+  --accent-color: #42C5B9;
+  --card-bg: #204A47;
+  --border-color: #30645E;
+}
+
+:root[data-mode='xklokon'][data-section='trading'] {
+  --bg: #2A4A28;
+  --accent-color: #6fb46d;
+  --card-bg: #3A5A38;
+  --border-color: #4A6A48;
+}
+
+:root[data-mode='xklokon'][data-section='create'] {
+  --bg: #6F4D18;
+  --accent-color: #f9c74f;
+  --card-bg: #7F5D28;
+  --border-color: #8F6D38;
+}
+
+:root[data-mode='xklokon'][data-section='me'] {
+  --bg: #3C295E;
+  --accent-color: #9c6edb;
+  --card-bg: #4C396E;
+  --border-color: #5C498E;
+}
+
+:root[data-mode='xklokon'][data-section='contact'] {
+  --bg: #262D36;
+  --accent-color: #4a5568;
+  --card-bg: #363D46;
+  --border-color: #464D56;
+}
+
+:root[data-mode='xklokon'][data-section='visual'] {
+  --bg: #6D2912;
+  --accent-color: #ec4e20;
+  --card-bg: #7D3922;
+  --border-color: #8D4932;
+}
+
+:root[data-mode='xklokon'][data-section='music'] {
+  --bg: #6B1600;
+  --accent-color: #dc2f02;
+  --card-bg: #7B2610;
+  --border-color: #8B3620;
+}
+
+:root[data-mode='xklokon'][data-section='gallery'] {
+  --bg: #3C1A70;
+  --accent-color: #8338ec;
+  --card-bg: #4C2A80;
+  --border-color: #5C3A90;
+}
+
+/* ===== EFECTOS DE RESPLANDOR ESPECÍFICOS POR SECCIÓN ===== */
+:root[data-mode='xklokon'][data-section='home'] .console-text {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='art'] .console-text {
+  text-shadow: 0 0 5px rgba(255, 95, 141, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='programming'] .console-text,
+:root[data-mode='xklokon'][data-section='code'] .console-text {
+  text-shadow: 0 0 5px rgba(66, 197, 185, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='trading'] .console-text {
+  text-shadow: 0 0 5px rgba(111, 180, 109, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='create'] .console-text {
+  text-shadow: 0 0 5px rgba(249, 199, 79, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='me'] .console-text {
+  text-shadow: 0 0 5px rgba(156, 110, 219, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='contact'] .console-text {
+  text-shadow: 0 0 5px rgba(74, 85, 104, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='visual'] .console-text {
+  text-shadow: 0 0 5px rgba(236, 78, 32, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='music'] .console-text {
+  text-shadow: 0 0 5px rgba(220, 47, 2, 0.5);
+}
+
+:root[data-mode='xklokon'][data-section='gallery'] .console-text {
+  text-shadow: 0 0 5px rgba(131, 56, 236, 0.5);
+}

@@ -22,14 +22,14 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
   };
   
   return (
-    <div className="fixed left-0 top-0 h-full w-[250px] p-10 flex flex-col z-10 color-transition">
+    <div className="fixed left-0 top-0 h-full w-[250px] p-10 flex flex-col z-10 border-r border-border-color">
       {/* Logo */}
       <div className="mb-24">
         <h1 className="text-4xl tracking-widest font-light cursor-pointer" onClick={() => router.push('/')}>
           kroko
         </h1>
         <p 
-          className="text-sm tracking-[0.2em] mt-1 cursor-pointer hover:text-accent-strong color-transition"
+          className="text-sm tracking-[0.2em] mt-1 cursor-pointer hover:text-accent-color"
           onClick={toggleMode}
         >
           {mode === 'kroko' ? 'XKLOKON' : 'KROKO'}
@@ -49,12 +49,12 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
               onClick={() => handleMenuItemClick(item.path)}
             >
               <AsciiHighlight 
-                accentColor="var(--accent-strong)"
+                accentColor="var(--accent-color)"
                 font={mode === 'xklokon' ? 'Slant' : 'Standard'}
               >
                 <span 
                   className={`text-4xl tracking-widest font-light transition-colors block ${
-                    isActive ? 'text-accent-strong' : 'hover:text-accent-strong color-transition'
+                    isActive ? 'text-accent-color' : 'hover:text-accent-color'
                   }`}
                 >
                   {item.label}

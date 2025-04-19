@@ -1,61 +1,167 @@
 :root {
-  /* Paleta de colores principal */
-  --color-primary-light: #74B3CE; 
-  --color-primary-mid: #508991;
-  --color-primary-dark: #172A3A;
-  --color-secondary: #004346;
-  --color-accent: #09BC8A;
-  
-  /* Color de acento dinámico - se puede sobrescribir por ruta */
-  --accent-color: var(--color-accent);
-  
-  /* Escala monocromática para diseño tipográfico */
+  /* ===== SISTEMA DE COLORES BÁSICO ===== */
+  /* Colores base - NO CAMBIAR directamente, usar las variables semánticas */
   --color-black: #000000;
-  --color-white: #FFFFFF;
-  --color-gray-100: #F3F4F6;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-400: #9CA3AF;
-  --color-gray-500: #6B7280;
-  --color-gray-600: #4B5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1F2937;
-  --color-gray-900: #111827;
+  --color-white: #ffffff;
   
-  /* Colores de interfaz */
-  --color-bg: var(--color-white); /* Updated for minimalist design */
-  --color-surface: var(--color-white); /* Updated for minimalist design */
-  --color-text: var(--color-black); /* Updated for minimalist design */
-  --color-text-secondary: var(--color-gray-500);
-  --color-border: var(--color-gray-200);
+  /* Escala de grises */
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #e5e5e5;
+  --color-gray-300: #d4d4d4;
+  --color-gray-400: #a3a3a3;
+  --color-gray-500: #737373;
+  --color-gray-600: #525252;
+  --color-gray-700: #404040;
+  --color-gray-800: #262626;
+  --color-gray-900: #171717;
   
-  /* Espaciado */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 4rem;
-  --spacing-3xl: 6rem;
-  --spacing-4xl: 8rem;
+  /* ===== COLORES SEMÁNTICOS (MODO KROKO) ===== */
+  /* Estos son los valores predeterminados para el modo kroko (claro) */
+  --bg: var(--color-white);
+  --text: var(--color-black);
+  --accent-color: var(--color-black);
+  --card-bg: var(--color-gray-100);
+  --border-color: var(--color-gray-300);
   
-  /* Tipografía */
-  --font-sans: 'Inter', 'Neue Haas Grotesk', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  
-  /* Propiedades tipográficas */
+  /* ===== TIPOGRAFÍA ===== */
+  --font-family: 'Consolas', Monaco, 'Courier New', monospace;
   --letter-spacing: 0.02em;
-  --letter-spacing-tight: 0.01em;
-  --letter-spacing-wide: 0.08em;
-  --letter-spacing-wider: 0.16em;
-  --letter-spacing-widest: 0.24em;
+  --letter-spacing-wide: 0.2em;
+  --letter-spacing-wider: 0.3em;
   --line-height-tight: 1.2;
-  --line-height-normal: 1.4;
-  --line-height-relaxed: 1.6;
-  --line-height-loose: 2.0;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
   
-  /* Transiciones */
-  --transition-standard: all 0.3s ease;
-  --transition-slow: all 0.5s ease;
-  --transition-fast: all 0.15s ease;
+  /* ===== TRANSICIONES ===== */
+  --transition-fast: 0.15s;
+  --transition-medium: 0.3s;
+  --transition-slow: 0.5s;
+}
+
+/* ===== MODO XKLOKON (OSCURO) - BASE ===== */
+/* Estos valores se aplican cuando el atributo data-mode es 'xklokon' */
+:root[data-mode='xklokon'] {
+  --bg: var(--color-black);
+  --text: var(--color-white);
+  --accent-color: var(--color-white);
+  --card-bg: var(--color-gray-900);
+  --border-color: var(--color-gray-700);
+}
+
+/* ===== COLORES DE ACENTO POR SECCIÓN (MODO KROKO) ===== */
+:root[data-section='home'] {
+  --accent-color: #000000;
+}
+
+:root[data-section='art'] {
+  --accent-color: #ff5f8d;
+}
+
+:root[data-section='programming'], :root[data-section='code'] {
+  --accent-color: #42C5B9;
+}
+
+:root[data-section='trading'] {
+  --accent-color: #6fb46d;
+}
+
+:root[data-section='create'] {
+  --accent-color: #f9c74f;
+}
+
+:root[data-section='me'] {
+  --accent-color: #9c6edb;
+}
+
+:root[data-section='contact'] {
+  --accent-color: #4a5568;
+}
+
+:root[data-section='visual'] {
+  --accent-color: #ec4e20;
+}
+
+:root[data-section='music'] {
+  --accent-color: #dc2f02;
+}
+
+:root[data-section='gallery'] {
+  --accent-color: #8338ec;
+}
+
+/* ===== FONDOS Y ACENTOS POR SECCIÓN (MODO XKLOKON) ===== */
+:root[data-mode='xklokon'][data-section='home'] {
+  --bg: #000000;
+  --accent-color: #ffffff;
+}
+
+:root[data-mode='xklokon'][data-section='art'] {
+  --bg: #7D3151;
+  --accent-color: #ff5f8d;
+}
+
+:root[data-mode='xklokon'][data-section='programming'], 
+:root[data-mode='xklokon'][data-section='code'] {
+  --bg: #103A37;
+  --accent-color: #42C5B9;
+}
+
+:root[data-mode='xklokon'][data-section='trading'] {
+  --bg: #2A4A28;
+  --accent-color: #6fb46d;
+}
+
+:root[data-mode='xklokon'][data-section='create'] {
+  --bg: #6F4D18;
+  --accent-color: #f9c74f;
+}
+
+:root[data-mode='xklokon'][data-section='me'] {
+  --bg: #3C295E;
+  --accent-color: #9c6edb;
+}
+
+:root[data-mode='xklokon'][data-section='contact'] {
+  --bg: #262D36;
+  --accent-color: #4a5568;
+}
+
+:root[data-mode='xklokon'][data-section='visual'] {
+  --bg: #6D2912;
+  --accent-color: #ec4e20;
+}
+
+:root[data-mode='xklokon'][data-section='music'] {
+  --bg: #6B1600;
+  --accent-color: #dc2f02;
+}
+
+:root[data-mode='xklokon'][data-section='gallery'] {
+  --bg: #3C1A70;
+  --accent-color: #8338ec;
+}
+
+/* ===== ESTILOS DE CONSOLA ===== */
+.console-text {
+  font-family: var(--font-family);
+  letter-spacing: -0.02em;
+}
+
+.cursor-effect::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+  color: currentColor;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ===== TRANSICIONES ===== */
+body, a, button, input, .card, .sidebar {
+  transition: 
+    background-color var(--transition-medium), 
+    color var(--transition-medium), 
+    border-color var(--transition-medium);
 }

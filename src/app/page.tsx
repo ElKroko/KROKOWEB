@@ -8,34 +8,22 @@ import Typography from '@/components/ui/Typography';
 
 export default function Home() {
   const { mode, toggleMode } = useDualMode();
-  const { accentColor } = useAccentColor();
   
-  // Background images for XKLOKON mode
-  const backgroundImages = [
-    '/images/art/placeholder_1.png',
-    '/images/art/placeholder_2.png',
-    '/images/art/placeholder_3.png',
-  ];
-
   // Content variables for both modes
   const krokoContent = {
     heading: "Kroko",
     subheading: "El ser humano, presente y emocional",
     description: "Canto, escribo y narro mis vivencias personales con calidez y vulnerabilidad.",
-    visualStyle: "tracking-wide font-light",
     buttonText: "Conocer a Kroko",
-    buttonLink: "/about",
-    headerColor: "primary"
+    buttonLink: "/about"
   };
 
   const xklokonContent = {
     heading: "XKLOKON",
     subheading: "El imaginario creador y abstracto",
     description: "Habito lo intangible, produzco sin filtros ni límites desde lo digital y lo onírico.",
-    visualStyle: "tracking-superwide font-mono",
     buttonText: "Explorar XKLOKON",
-    buttonLink: "/visual",
-    headerColor: "secondary"
+    buttonLink: "/visual"
   };
 
   // Active content based on mode
@@ -56,8 +44,7 @@ export default function Home() {
           {/* Heading */}
           <Typography 
             variant="h1" 
-            className={`${content.visualStyle} mb-6`}
-            colorClass={content.headerColor as any}
+            className={`font-mono tracking-wide mb-6 ${mode === 'xklokon' ? 'console-text' : ''}`}
           >
             {content.heading}
           </Typography>
@@ -65,8 +52,7 @@ export default function Home() {
           {/* Subheading */}
           <Typography 
             variant="h3" 
-            className={`${content.visualStyle} mb-8`}
-            accent
+            className={`font-mono tracking-wider mb-8 ${mode === 'xklokon' ? 'console-text' : ''}`}
           >
             {content.subheading}
           </Typography>
@@ -74,7 +60,7 @@ export default function Home() {
           {/* Description */}
           <Typography 
             variant="lead" 
-            className={`mb-12 max-w-2xl mx-auto ${mode === 'xklokon' ? 'font-mono' : 'font-sans'}`}
+            className={`mb-12 max-w-2xl mx-auto font-mono ${mode === 'xklokon' ? 'console-text' : ''}`}
           >
             {content.description}
           </Typography>
@@ -83,7 +69,12 @@ export default function Home() {
           <div className="mt-8">
             <button 
               onClick={toggleMode}
-              className={`px-8 py-3 border border-current ${mode === 'kroko' ? 'rounded-md' : 'rounded-none'} transition-all hover:bg-black hover:text-white`}
+              className={`
+                px-8 py-3 border border-current 
+                ${mode === 'kroko' ? 'rounded-md' : 'rounded-none'} 
+                transition-all font-mono
+                ${mode === 'kroko' ? 'hover:bg-black hover:text-white' : 'hover:bg-white hover:text-black'}
+              `}
             >
               Cambiar a {mode === 'kroko' ? 'XKLOKON' : 'Kroko'}
             </button>
@@ -96,43 +87,16 @@ export default function Home() {
         <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
           <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.15 }}
+            animate={{ opacity: 0.05 }}
             className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full"
-            style={{ backgroundColor: accentColor, filter: 'blur(80px)' }}
+            style={{ backgroundColor: '#000000', filter: 'blur(80px)' }}
           />
         </div>
       )}
       
-      {/* Background images for XKLOKON mode */}
+      {/* Background elements for XKLOKON mode */}
       {mode === 'xklokon' && (
         <div className="bg-image fixed inset-0 z-[-1] pointer-events-none">
-          {backgroundImages.map((img, index) => (
-            <motion.img 
-              key={index}
-              initial={{ opacity: 0, rotate: index * 5 }}
-              animate={{ 
-                opacity: 0.2,
-                rotate: index * 10,
-                x: Math.sin(index) * 20
-              }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity, 
-                repeatType: "reverse" 
-              }}
-              src={img} 
-              alt=""
-              className="absolute transition-all duration-500"
-              style={{
-                top: `${20 + index * 30}%`,
-                left: `${50 + index * 10}%`,
-                maxWidth: '40%',
-                maxHeight: '40%',
-                filter: 'grayscale(0.8) contrast(1.2)'
-              }}
-            />
-          ))}
-          
           {/* Digital noise elements */}
           <motion.div 
             className="absolute inset-0 mix-blend-overlay opacity-10"
@@ -141,14 +105,17 @@ export default function Home() {
               backgroundSize: 'cover'
             }}
           />
+          
+          {/* Console cursor effect */}
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 cursor-effect"></div>
         </div>
       )}
 
       {/* Visual separator based on mode */}
-      <div className={`absolute bottom-12 w-24 h-px ${mode === 'kroko' ? 'bg-current opacity-30' : 'bg-accent-color opacity-50'}`}></div>
+      <div className="absolute bottom-12 w-24 h-px bg-current opacity-30"></div>
       
       {/* Mode indicator */}
-      <div className="absolute bottom-6 text-xs tracking-widest opacity-50">
+      <div className="absolute bottom-6 text-xs font-mono tracking-widest opacity-50">
         {mode.toUpperCase()} MODE
       </div>
     </div>

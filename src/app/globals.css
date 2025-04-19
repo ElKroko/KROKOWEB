@@ -5,86 +5,56 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Common variables */
-  --accent-color: #74B3CE;
-  
-  /* Header specific colors */
-  --header-primary: #508991;
-  --header-secondary: #172A3A;
-  --header-accent: var(--accent-color);
-  --header-muted: #888888;
-  
-  /* Dynamic color variables for theme switching */
-  --bg: #ffffff;
-  --text: #000000;
-  --link: #000000;
-  --bg-image-opacity: 0;
-  
-  /* Typography settings */
-  --letter-spacing-wide: 0.2em;
-  --letter-spacing-wider: 0.3em;
-  
-  /* Animation durations */
-  --transition-slow: 0.5s;
-  --transition-medium: 0.3s;
-  --transition-fast: 0.15s;
-}
-
-:root[data-mode='kroko'] {
-  --bg-image-opacity: 0;
-}
-
-:root[data-mode='xklokon'] {
-  --bg-image-opacity: 0.1;
-}
-
+/* Estilos base que se aplican a toda la aplicación */
 body {
   background-color: var(--bg);
   color: var(--text);
-  transition: background-color 0.5s, color 0.5s;
-  font-family: var(--font-sans);
+  font-family: var(--font-family);
   letter-spacing: var(--letter-spacing);
+  margin: 0;
+  padding: 0;
 }
 
-a { 
-  color: var(--link);
-  transition: color 0.3s;
+/* Utiliza los colores de acento de data-accent-color si están disponibles */
+:root[data-accent-color] {
+  --accent-color: #000000; /* Valor predeterminado */
 }
 
-.bg-image { 
-  opacity: var(--bg-image-opacity);
-  transition: opacity 0.5s;
+/* Estilos para el modo xklokon - terminal/consola */
+:root[data-mode='xklokon'] .console-text {
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
-/* Sidebar specific styles */
-.sidebar {
-  transition: background-color 0.3s;
+/* Efectos de terminal para modo xklokon */
+:root[data-mode='xklokon'] .terminal-effect {
+  position: relative;
+  overflow: hidden;
 }
 
-/* Page transition effects */
-.page-transition-enter {
-  opacity: 0;
+:root[data-mode='xklokon'] .terminal-effect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  opacity: 0.4;
 }
 
-.page-transition-enter-active {
-  opacity: 1;
-  transition: opacity 0.3s;
-}
-
-.page-transition-exit {
-  opacity: 1;
-}
-
-.page-transition-exit-active {
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
+/* Componentes comunes */
 @layer components {
   .card {
     @apply rounded-lg shadow-md overflow-hidden;
-    background-color: #1F2937; /* Valor de dark-card */
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
   }
 
   .container-custom {
@@ -94,35 +64,10 @@ a {
   .section-padding {
     @apply py-16 px-4;
   }
-
-  .gradient-bg {
-    @apply bg-gradient-to-br from-primary-dark to-accent;
-  }
-
-  .bg-gradient-custom {
-    @apply bg-gradient-to-r from-primary-light to-accent;
-  }
   
-  /* New classes for minimalist typographic design */
+  /* Clases de tipografía */
   .text-accent-color {
     color: var(--accent-color);
-  }
-  
-  /* Header specific color classes */
-  .text-primary {
-    color: var(--header-primary);
-  }
-  
-  .text-secondary {
-    color: var(--header-secondary);
-  }
-  
-  .text-accent {
-    color: var(--header-accent);
-  }
-  
-  .text-muted {
-    color: var(--header-muted);
   }
   
   .tracking-widest {
@@ -133,11 +78,25 @@ a {
     letter-spacing: var(--letter-spacing-wider);
   }
   
-  .hover-image {
-    @apply opacity-0 absolute transition-all duration-500;
+  /* Botones monocromáticos con acento */
+  .btn-mono {
+    @apply px-4 py-2 border transition-all duration-300;
+    border-color: var(--accent-color);
+    color: var(--text);
   }
   
-  .hover-image-active {
-    @apply opacity-40;
+  .btn-mono:hover {
+    background-color: var(--accent-color);
+    color: var(--bg);
+  }
+  
+  .btn-mono-filled {
+    @apply px-4 py-2 transition-all duration-300;
+    background-color: var(--accent-color);
+    color: var(--bg);
+  }
+  
+  .btn-mono-filled:hover {
+    @apply opacity-80;
   }
 }

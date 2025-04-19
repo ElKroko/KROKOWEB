@@ -1,11 +1,13 @@
-import type { Metadata } from 'next';
-import { Inter, Roboto_Mono } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import './base-styles.css';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { AccentColorProvider } from '@/providers/AccentColorProvider';
 import { DualModeProvider } from '@/providers/DualModeProvider';
 import SidebarLayout from '@/components/layout/SidebarLayout';
+import SectionTracker from '@/components/SectionTracker';
+// Import metadata from separate file
+import './metadata';
 
 // Main font for body text
 const inter = Inter({
@@ -15,16 +17,11 @@ const inter = Inter({
 });
 
 // Monospace font for code and accents
-const roboto_mono = Roboto_Mono({
+const mono = JetBrains_Mono({
   subsets: ['latin'],
-  display: 'swap',
   variable: '--font-mono',
+  display: 'swap',
 });
-
-export const metadata: Metadata = {
-  title: 'KROKO | Portfolio',
-  description: 'Personal portfolio showcasing art, code, trade, and creative work',
-};
 
 export default function RootLayout({
   children,
@@ -32,16 +29,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${roboto_mono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body>
         <ThemeProvider>
-          <AccentColorProvider>
-            <DualModeProvider>
+          <DualModeProvider>
+            <AccentColorProvider>
+              <SectionTracker />
               <SidebarLayout>
                 {children}
               </SidebarLayout>
-            </DualModeProvider>
-          </AccentColorProvider>
+            </AccentColorProvider>
+          </DualModeProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -24,13 +24,19 @@ export const DualModeProvider = ({ children }: { children: React.ReactNode }) =>
     const modeParam = searchParams.get('mode');
     if (modeParam === 'xklokon' || modeParam === 'kroko') {
       setModeState(modeParam);
-      document.documentElement.setAttribute('data-mode', modeParam);
     }
   }, [searchParams]);
 
-  // Apply mode to document
+  // Apply mode to document using data-mode attribute
+  // The CSS variables in variables.css will respond to this attribute
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
+    
+    // No longer setting individual CSS variables here
+    // All styles now come from CSS selectors using the data-mode attribute
+    
+    // Log mode change for debugging
+    console.log(`Mode changed to: ${mode}`);
   }, [mode]);
 
   const setMode = (newMode: ModeType) => {
