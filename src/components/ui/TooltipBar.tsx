@@ -5,9 +5,10 @@ import { usePathname } from 'next/navigation';
 
 interface TooltipBarProps {
   defaultMessage?: string;
+  className?: string;
 }
 
-const TooltipBar: React.FC<TooltipBarProps> = ({ defaultMessage = '¡Bienvenido a mi sitio web!' }) => {
+const TooltipBar: React.FC<TooltipBarProps> = ({ defaultMessage = '¡Bienvenido a mi sitio web!', className = '' }) => {
   const [message, setMessage] = useState(defaultMessage);
   const [isVisible, setIsVisible] = useState(true);
   const pathname = usePathname();
@@ -33,6 +34,10 @@ const TooltipBar: React.FC<TooltipBarProps> = ({ defaultMessage = '¡Bienvenido 
       routeMessage = 'Escucha mis tracks favoritos';
     } else if (pathname.startsWith('/emed')) {
       routeMessage = 'Proyectos especiales';
+    } else if (pathname.startsWith('/create')) {
+      routeMessage = 'Proyectos creativos y experimentales';
+    } else if (pathname.startsWith('/me')) {
+      routeMessage = 'Sobre mí y mi trabajo';
     }
     
     setMessage(routeMessage);
@@ -82,7 +87,7 @@ const TooltipBar: React.FC<TooltipBarProps> = ({ defaultMessage = '¡Bienvenido 
   return (
     <div 
       id="tooltip-bar"
-      className={`corner-tooltip ${isVisible ? 'has-message' : ''}`}
+      className={`sidebar-tooltip ${isVisible ? 'has-message' : ''} ${className}`}
     >
       <span className="tooltip-message">{message}</span>
     </div>

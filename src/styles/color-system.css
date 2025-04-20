@@ -4,7 +4,7 @@
   --accent-strong: #09BC8A;  /* Color fuerte/principal */
   --accent-bg: #EBF0FA;      /* Color de fondo */
   --accent-comp: #F16F6E;    /* Color complementario */
-  --text-color: #000000;     /* Color de texto principal */
+  --text-color: #1E1E1E;     /* Color de texto principal */
   
   /* Variables de compatibilidad para código existente */
   --accent-color: var(--accent-strong);
@@ -16,67 +16,53 @@
 
 /* Definiciones de color por sección */
 :root {
-  /* Home */
-  --home-strong: #ff6f61;
-  --home-bg: #fff1f0;
-  --home-comp: #d64541;
-  --home-text: #000000;
-  --home-bg-dark: #2a1414;
-  --home-text-dark: #fff1f0;
+  /* Home - Nuevos colores con tema azul marino/turquesa */
+  --home-strong: #0099cc; /* Azul turquesa como color principal */
+  --home-bg: #e6f7ff; /* Fondo azul muy claro */
+  --home-comp: #005580; /* Azul marino oscuro como complementario */
+  --home-text: #1E1E1E; /* Negro suave para el texto */
+  --home-bg-dark: #1E1E1E; /* Negro para el modo xklokon */
+  --home-text-dark: #F5F5F0; /* Blanco hueso para el texto en modo oscuro */
 
-  /* Code/Programming */
-  --code-strong: #88b04b;
-  --code-bg: #f0f4e6;
-  --code-comp: #6b8440;
-  --code-text: #000000;
-  --code-bg-dark: #1e2a12;
-  --code-text-dark: #f0f4e6;
-  
+  /* Programming */
   --programming-strong: #88b04b;
-  --programming-bg: #f0f4e6;
+  --programming-bg: rgba(136, 176, 75, 0.15); /* Basado en programming-strong con transparencia */
   --programming-comp: #6b8440;
-  --programming-text: #000000;
-  --programming-bg-dark: #1e2a12;
-  --programming-text-dark: #f0f4e6;
+  --programming-text: #1E1E1E; /* Negro suave en lugar de negro puro */
+  --programming-bg-dark: rgba(75, 102, 35, 0.9); /* Versión oscura e intensa del color de acento */
+  --programming-text-dark: #F5F5F0; /* Blanco hueso en lugar de blanco puro */
 
-  /* Trade/Trading */
-  --trade-strong: #10B981;
-  --trade-bg: #e6f6f0;
-  --trade-comp: #0d9669;
-  --trade-text: #000000;
-  --trade-bg-dark: #0f2a22;
-  --trade-text-dark: #e6f6f0;
-  
+  /* Trading */
   --trading-strong: #10B981;
-  --trading-bg: #e6f6f0;
+  --trading-bg: rgba(16, 185, 129, 0.15); /* Basado en trading-strong con transparencia */
   --trading-comp: #0d9669;
-  --trading-text: #000000;
-  --trading-bg-dark: #0f2a22;
-  --trading-text-dark: #e6f6f0;
+  --trading-text: #1E1E1E; /* Negro suave en lugar de negro puro */
+  --trading-bg-dark: rgba(9, 122, 85, 0.9); /* Versión oscura e intensa del color de acento */
+  --trading-text-dark: #F5F5F0; /* Blanco hueso en lugar de blanco puro */
 
   /* Create (combinación de Art y Music) */
   --create-strong: #8A4FFF;
-  --create-bg: #f2eeff;
+  --create-bg: rgba(138, 79, 255, 0.15); /* Basado en create-strong con transparencia */
   --create-comp: #EC4899;
-  --create-text: #000000;
-  --create-bg-dark: #1a1032;
-  --create-text-dark: #f2eeff;
+  --create-text: #1E1E1E; /* Negro suave en lugar de negro puro */
+  --create-bg-dark: rgba(81, 40, 168, 0.9); /* Versión oscura e intensa del color de acento */
+  --create-text-dark: #F5F5F0; /* Blanco hueso en lugar de blanco puro */
 
   /* Me (anteriormente About) */
   --me-strong: #F59E0B;
-  --me-bg: #fef3c7;
+  --me-bg: rgba(245, 158, 11, 0.15); /* Basado en me-strong con transparencia */
   --me-comp: #c47d09;
-  --me-text: #000000;
-  --me-bg-dark: #2e230a;
-  --me-text-dark: #fef3c7;
+  --me-text: #1E1E1E; /* Negro suave en lugar de negro puro */
+  --me-bg-dark: rgba(153, 96, 5, 0.9); /* Versión oscura e intensa del color de acento */
+  --me-text-dark: #F5F5F0; /* Blanco hueso en lugar de blanco puro */
 
   /* Contact */
   --contact-strong: #6366F1;
-  --contact-bg: #ede9fe;
+  --contact-bg: rgba(99, 102, 241, 0.15); /* Basado en contact-strong con transparencia */
   --contact-comp: #4f46e5;
-  --contact-text: #000000;
-  --contact-bg-dark: #161738;
-  --contact-text-dark: #ede9fe;
+  --contact-text: #1E1E1E; /* Negro suave en lugar de negro puro */
+  --contact-bg-dark: rgba(58, 61, 168, 0.9); /* Versión oscura e intensa del color de acento */
+  --contact-text-dark: #F5F5F0; /* Blanco hueso en lugar de blanco puro */
 }
 
 /* Base styles for mode switching */
@@ -156,7 +142,7 @@ body {
 
 /* ======== PALETAS POR PÁGINA ======== */
 /* Página HOME (claro) */
-[data-page='home']:not([data-mode='xklokon']) {
+[data-section='home']:not([data-mode='xklokon']) {
   --accent-strong: var(--home-strong);
   --accent-bg: var(--home-bg);
   --accent-comp: var(--home-comp);
@@ -169,8 +155,17 @@ body {
   color: var(--home-text);
 }
 
+body[data-section='home']:not([data-mode='xklokon']),
+html[data-section='home']:not([data-mode='xklokon']),
+:root[data-section='home']:not([data-mode='xklokon']) {
+  background-color: var(--home-bg);
+  color: var(--home-text);
+}
+
 /* Página HOME (oscuro - modo xklokon) */
-[data-page='home'][data-mode='xklokon'] {
+[data-section='home'][data-mode='xklokon'],
+html[data-mode='xklokon'][data-section='home'],
+body[data-mode='xklokon'][data-section='home'] {
   --accent-strong: var(--home-strong);
   --accent-bg: var(--home-bg-dark);
   --accent-comp: var(--home-comp);
@@ -184,7 +179,7 @@ body {
 }
 
 /* Página PROGRAMMING (claro) */
-[data-page='programming']:not([data-mode='xklokon']) {
+[data-section='programming']:not([data-mode='xklokon']) {
   --accent-strong: var(--programming-strong);
   --accent-bg: var(--programming-bg);
   --accent-comp: var(--programming-comp);
@@ -197,8 +192,15 @@ body {
   color: var(--programming-text);
 }
 
+body[data-section='programming']:not([data-mode='xklokon']),
+html[data-section='programming']:not([data-mode='xklokon']),
+:root[data-section='programming']:not([data-mode='xklokon']) {
+  background-color: var(--programming-bg);
+  color: var(--programming-text);
+}
+
 /* Página PROGRAMMING (oscuro - modo xklokon) */
-[data-page='programming'][data-mode='xklokon'] {
+[data-section='programming'][data-mode='xklokon'] {
   --accent-strong: var(--programming-strong);
   --accent-bg: var(--programming-bg-dark);
   --accent-comp: var(--programming-comp);
@@ -212,7 +214,7 @@ body {
 }
 
 /* Página TRADING (claro) */
-[data-page='trading']:not([data-mode='xklokon']) {
+[data-section='trading']:not([data-mode='xklokon']) {
   --accent-strong: var(--trading-strong);
   --accent-bg: var(--trading-bg);
   --accent-comp: var(--trading-comp);
@@ -225,8 +227,15 @@ body {
   color: var(--trading-text);
 }
 
+body[data-section='trading']:not([data-mode='xklokon']),
+html[data-section='trading']:not([data-mode='xklokon']),
+:root[data-section='trading']:not([data-mode='xklokon']) {
+  background-color: var(--trading-bg);
+  color: var(--trading-text);
+}
+
 /* Página TRADING (oscuro - modo xklokon) */
-[data-page='trading'][data-mode='xklokon'] {
+[data-section='trading'][data-mode='xklokon'] {
   --accent-strong: var(--trading-strong);
   --accent-bg: var(--trading-bg-dark);
   --accent-comp: var(--trading-comp);
@@ -240,7 +249,7 @@ body {
 }
 
 /* Página CREATE (claro) - combinación de ART y MUSIC */
-[data-page='create']:not([data-mode='xklokon']) {
+[data-section='create']:not([data-mode='xklokon']) {
   --accent-strong: var(--create-strong);
   --accent-bg: var(--create-bg);
   --accent-comp: var(--create-comp);
@@ -253,8 +262,15 @@ body {
   color: var(--create-text);
 }
 
+body[data-section='create']:not([data-mode='xklokon']),
+html[data-section='create']:not([data-mode='xklokon']),
+:root[data-section='create']:not([data-mode='xklokon']) {
+  background-color: var(--create-bg);
+  color: var(--create-text);
+}
+
 /* Página CREATE (oscuro - modo xklokon) */
-[data-page='create'][data-mode='xklokon'] {
+[data-section='create'][data-mode='xklokon'] {
   --accent-strong: var(--create-strong);
   --accent-bg: var(--create-bg-dark);
   --accent-comp: var(--create-comp);
@@ -268,7 +284,7 @@ body {
 }
 
 /* Página ME (claro) - anteriormente ABOUT */
-[data-page='me']:not([data-mode='xklokon']) {
+[data-section='me']:not([data-mode='xklokon']) {
   --accent-strong: var(--me-strong);
   --accent-bg: var(--me-bg);
   --accent-comp: var(--me-comp);
@@ -281,8 +297,15 @@ body {
   color: var(--me-text);
 }
 
+body[data-section='me']:not([data-mode='xklokon']),
+html[data-section='me']:not([data-mode='xklokon']),
+:root[data-section='me']:not([data-mode='xklokon']) {
+  background-color: var(--me-bg);
+  color: var(--me-text);
+}
+
 /* Página ME (oscuro - modo xklokon) */
-[data-page='me'][data-mode='xklokon'] {
+[data-section='me'][data-mode='xklokon'] {
   --accent-strong: var(--me-strong);
   --accent-bg: var(--me-bg-dark);
   --accent-comp: var(--me-comp);
@@ -296,7 +319,7 @@ body {
 }
 
 /* Página CONTACT (claro) */
-[data-page='contact']:not([data-mode='xklokon']) {
+[data-section='contact']:not([data-mode='xklokon']) {
   --accent-strong: var(--contact-strong);
   --accent-bg: var(--contact-bg);
   --accent-comp: var(--contact-comp);
@@ -309,8 +332,15 @@ body {
   color: var(--contact-text);
 }
 
+body[data-section='contact']:not([data-mode='xklokon']),
+html[data-section='contact']:not([data-mode='xklokon']),
+:root[data-section='contact']:not([data-mode='xklokon']) {
+  background-color: var(--contact-bg);
+  color: var(--contact-text);
+}
+
 /* Página CONTACT (oscuro - modo xklokon) */
-[data-page='contact'][data-mode='xklokon'] {
+[data-section='contact'][data-mode='xklokon'] {
   --accent-strong: var(--contact-strong);
   --accent-bg: var(--contact-bg-dark);
   --accent-comp: var(--contact-comp);
@@ -352,7 +382,7 @@ body, button, input, select, textarea {
 
 /* ===== COLORES DE ACENTO POR SECCIÓN (MODO KROKO) ===== */
 :root[data-section='home'] {
-  --accent-color: #000000;
+  --accent-color: #0099cc; /* Cambiado a azul turquesa para coincidir con home-strong */
 }
 
 :root[data-section='art'] {
@@ -393,10 +423,10 @@ body, button, input, select, textarea {
 
 /* ===== FONDOS Y ACENTOS POR SECCIÓN (MODO XKLOKON) ===== */
 :root[data-mode='xklokon'][data-section='home'] {
-  --bg: #000000;
-  --accent-color: #ffffff;
-  --card-bg: #0a0a0a;
-  --border-color: #333333;
+  --bg: #1E1E1E; /* Negro para el modo xklokon */
+  --accent-color: #0099cc; /* Azul turquesa como color de acento */
+  --card-bg: #2A2A2A; /* Gris oscuro para tarjetas */
+  --border-color: #333333; /* Gris más claro para bordes */
 }
 
 :root[data-mode='xklokon'][data-section='art'] {
@@ -465,7 +495,7 @@ body, button, input, select, textarea {
 
 /* ===== EFECTOS DE RESPLANDOR ESPECÍFICOS POR SECCIÓN ===== */
 :root[data-mode='xklokon'][data-section='home'] .console-text {
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 5px rgba(245, 245, 240, 0.5); /* Blanco hueso en lugar de blanco puro */
 }
 
 :root[data-mode='xklokon'][data-section='art'] .console-text {

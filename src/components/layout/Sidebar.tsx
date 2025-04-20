@@ -22,18 +22,23 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
   };
   
   return (
-    <div className="fixed left-0 top-0 h-full w-[250px] p-10 flex flex-col z-10 border-r border-border-color">
-      {/* Logo */}
-      <div className="mb-24">
+    <div className="fixed left-0 top-0 h-full w-[250px] p-10 flex flex-col z-50 border-r border-border-color">
+      {/* Logo - cambia según el modo actual */}
+      <div className="mb-1">
         <h1 className="text-4xl tracking-widest font-light cursor-pointer" onClick={() => router.push('/')}>
-          kroko
+          {mode === 'kroko' ? 'kroko' : 'xklokon'}
         </h1>
-        <p 
-          className="text-sm tracking-[0.2em] mt-1 cursor-pointer hover:text-accent-color"
-          onClick={toggleMode}
-        >
-          {mode === 'kroko' ? 'XKLOKON' : 'KROKO'}
-        </p>
+      </div>
+      
+      {/* Toggle de modo debajo del logo */}
+      <div 
+        className="mb-20 cursor-pointer"
+        onClick={toggleMode}
+      >
+        <span className="text-sm tracking-[0.2em] flex items-center text-accent-color hover:opacity-80 transition-all">
+          <span className="mr-2">→</span>
+          {mode === 'kroko' ? 'xklokon' : 'kroko'}
+        </span>
       </div>
       
       {/* Menu items */}

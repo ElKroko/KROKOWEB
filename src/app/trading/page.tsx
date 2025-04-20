@@ -52,11 +52,11 @@ export default function TradingPage() {
   const [activeTab, setActiveTab] = useState('projects');
 
   return (
-    <div className="p-16 min-h-screen">
+    <div className="p-8 min-h-screen">
       {/* Header */}
       <div className="mb-20">
         <Typography variant="h1" className="text-9xl tracking-widest font-light">
-          <Highlight accentColor={accentColor}>TRADE</Highlight>
+          <span style={{ color: accentColor }}>TRADE</span>
         </Typography>
         <Typography variant="body" className="mt-6 text-xl max-w-2xl">
           Enfoque cuantitativo al trading y análisis financiero. Desarrollo de modelos 
@@ -93,9 +93,9 @@ export default function TradingPage() {
             {tradingProjects.map((project) => (
               <div key={project.id} className="group">
                 <Typography variant="h2" className="text-3xl tracking-wider mb-6">
-                  <Highlight accentColor={accentColor}>
+                  <span style={{ color: accentColor }}>
                     {project.title}
-                  </Highlight>
+                  </span>
                 </Typography>
                 
                 <Typography variant="body" className="mb-6">
@@ -135,9 +135,9 @@ export default function TradingPage() {
       {activeTab === 'methodology' && (
         <div className="max-w-3xl">
           <Typography variant="h2" className="text-3xl tracking-wider mb-8">
-            <Highlight accentColor={accentColor}>
+            <span style={{ color: accentColor }}>
               Enfoque Metodológico
-            </Highlight>
+            </span>
           </Typography>
           
           <div className="space-y-8">
@@ -181,9 +181,9 @@ export default function TradingPage() {
       {activeTab === 'tools' && (
         <div className="max-w-3xl">
           <Typography variant="h2" className="text-3xl tracking-wider mb-8">
-            <Highlight accentColor={accentColor}>
+            <span style={{ color: accentColor }}>
               Stack Tecnológico
-            </Highlight>
+            </span>
           </Typography>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

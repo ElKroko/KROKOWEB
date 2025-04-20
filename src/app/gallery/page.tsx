@@ -90,7 +90,7 @@ export default function GalleryPage() {
           </pre>
         ) : (
           <Typography variant="h1" className="text-9xl tracking-widest font-light">
-            <Highlight accentColor={accentColor}>CREATE</Highlight>
+            <span style={{ color: accentColor }}>CREATE</span>
           </Typography>
         )}
         <Typography variant="body" className="mt-6 text-xl max-w-2xl">
@@ -123,9 +123,9 @@ export default function GalleryPage() {
                 </div>
                 
                 <Typography variant="h3" className="text-2xl tracking-wider mb-2">
-                  <Highlight accentColor={accentColor}>
+                  <span style={{ color: accentColor }}>
                     {project.title}
-                  </Highlight>
+                  </span>
                 </Typography>
                 
                 <div className="flex justify-between items-center mb-3">
@@ -157,9 +157,9 @@ export default function GalleryPage() {
               
               <div className="md:w-1/3">
                 <Typography variant="h2" className="text-4xl tracking-wider mb-4">
-                  <Highlight accentColor={accentColor}>
+                  <span style={{ color: accentColor }}>
                     {activeProject.title}
-                  </Highlight>
+                  </span>
                 </Typography>
                 
                 <div className="text-sm opacity-70 mb-6">{activeProject.year}</div>

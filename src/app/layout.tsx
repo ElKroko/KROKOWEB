@@ -1,13 +1,10 @@
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import './base-styles.css';
+import "./base-styles.css"
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { AccentColorProvider } from '@/providers/AccentColorProvider';
 import { DualModeProvider } from '@/providers/DualModeProvider';
 import SidebarLayout from '@/components/layout/SidebarLayout';
-import SectionTracker from '@/components/SectionTracker';
-// Import metadata from separate file
-import './metadata';
 
 // Main font for body text
 const inter = Inter({
@@ -23,6 +20,12 @@ const mono = JetBrains_Mono({
   display: 'swap',
 });
 
+// Definir los metadatos directamente aquí en lugar de importarlos
+export const metadata = {
+  title: 'KROKO | Portfolio',
+  description: 'Personal portfolio showcasing art, code, trade, and creative work',
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -34,7 +37,6 @@ export default function RootLayout({
         <ThemeProvider>
           <DualModeProvider>
             <AccentColorProvider>
-              <SectionTracker />
               <SidebarLayout>
                 {children}
               </SidebarLayout>

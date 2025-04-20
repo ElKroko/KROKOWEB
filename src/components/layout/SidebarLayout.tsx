@@ -36,6 +36,12 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
       pageName: 'trading'
     },
     { 
+      id: 'art', 
+      label: 'ART', 
+      path: '/art',
+      pageName: 'art'
+    },
+    { 
       id: 'create', 
       label: 'CREATE', 
       path: '/create',
@@ -77,8 +83,10 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         {children}
       </main>
       
-      {/* Tooltip bar at the bottom of the page */}
-      <TooltipBar />
+      {/* Tooltip bar en la esquina superior derecha */}
+      <div className="fixed top-6 right-6 z-50">
+        <TooltipBar />
+      </div>
     </div>
   );
 };

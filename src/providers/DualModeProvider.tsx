@@ -19,11 +19,21 @@ export const DualModeProvider = ({ children }: { children: React.ReactNode }) =>
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  // Initialize mode from URL on mount
+  // Initialize mode from localStorage and URL on mount
   useEffect(() => {
+    // Check localStorage first
+    const storedMode = localStorage.getItem('kroko-mode');
+    if (storedMode === 'xklokon' || storedMode === 'kroko') {
+      setModeState(storedMode as ModeType);
+    }
+    
+    // Then check URL param (URL takes precedence)
     const modeParam = searchParams.get('mode');
     if (modeParam === 'xklokon' || modeParam === 'kroko') {
       setModeState(modeParam);
+      
+      // Also update localStorage to keep them in sync
+      localStorage.setItem('kroko-mode', modeParam);
     }
   }, [searchParams]);
 
@@ -31,9 +41,10 @@ export const DualModeProvider = ({ children }: { children: React.ReactNode }) =>
   // The CSS variables in variables.css will respond to this attribute
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
+    document.body.setAttribute('data-mode', mode);
     
-    // No longer setting individual CSS variables here
-    // All styles now come from CSS selectors using the data-mode attribute
+    // Store current mode in localStorage for persistence between sessions
+    localStorage.setItem('kroko-mode', mode);
     
     // Log mode change for debugging
     console.log(`Mode changed to: ${mode}`);

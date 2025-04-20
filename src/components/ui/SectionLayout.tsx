@@ -9,6 +9,7 @@ interface SectionLayoutProps {
   className?: string;
   fullWidth?: boolean;
   id?: string;
+  isFirstSection?: boolean;
 }
 
 export default function SectionLayout({
@@ -18,6 +19,7 @@ export default function SectionLayout({
   className,
   fullWidth = false,
   id,
+  isFirstSection = false,
 }: SectionLayoutProps) {
   // Set the accent color as a CSS variable at the section level
   const sectionStyle = accentColor ? { '--accent-color': accentColor } as React.CSSProperties : {};
@@ -26,13 +28,16 @@ export default function SectionLayout({
     <section 
       id={id}
       className={cn(
-        "my-16 md:my-24", // Margin vertical amplio
+        isFirstSection ? "my-2" : "my-12 md:my-16", // Reducción de márgenes
         className
       )}
       style={sectionStyle}
     >
       {title && (
-        <Typography variant="h2" className="mb-8 md:mb-12">
+        <Typography variant="h2" className={cn(
+          "mb-8 md:mb-12",
+          isFirstSection && "page-title-container" // Aplicar la clase personalizada si es la primera sección
+        )}>
           {title}
         </Typography>
       )}

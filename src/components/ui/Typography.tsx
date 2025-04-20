@@ -18,6 +18,7 @@ type TypographyProps = {
   as?: React.ElementType;
   accent?: boolean;
   colorClass?: 'primary' | 'secondary' | 'accent' | 'muted';
+  fullWidth?: boolean;
 };
 
 export default function Typography({
@@ -27,6 +28,7 @@ export default function Typography({
   as,
   accent = false,
   colorClass,
+  fullWidth = true,
   ...props
 }: TypographyProps & React.HTMLAttributes<HTMLElement>) {
   const Component = as || getElementForVariant(variant);
@@ -37,6 +39,7 @@ export default function Typography({
         getVariantClasses(variant),
         accent && 'text-accent-color',
         colorClass && `text-${colorClass}`,
+        fullWidth && 'w-full',
         className
       )}
       {...props}

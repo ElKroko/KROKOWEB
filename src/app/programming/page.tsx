@@ -102,11 +102,11 @@ export default function ProgrammingPage() {
   const [activeProject, setActiveProject] = useState<number | null>(null);
 
   return (
-    <div className="p-16 min-h-screen">
+    <div className="p-8 min-h-screen">
       {/* Header */}
-      <div className="mb-20">
+      <div className="mb-10">
         <Typography variant="h1" className="text-9xl tracking-widest font-light">
-          <Highlight accentColor={accentColor}>CODE</Highlight>
+          <span style={{ color: accentColor }}>CODE</span>
         </Typography>
         <Typography variant="body" className="mt-6 text-xl max-w-2xl">
           Desarrollo de software centrado en la experimentación, visualización de datos y las tecnologías web.
@@ -124,13 +124,13 @@ export default function ProgrammingPage() {
             <div className="md:flex md:items-start gap-12">
               <div className="md:w-1/2">
                 <Typography variant="h2" className="text-3xl tracking-wider mb-6">
-                  <Highlight 
-                    accentColor={accentColor}
+                  <span 
+                    style={{ color: activeProject === project.id ? accentColor : 'currentColor' }}
                     onMouseEnter={() => setActiveProject(project.id)}
                     onMouseLeave={() => setActiveProject(null)}
                   >
                     {project.title}
-                  </Highlight>
+                  </span>
                 </Typography>
                 
                 <Typography variant="body" className="mb-6">

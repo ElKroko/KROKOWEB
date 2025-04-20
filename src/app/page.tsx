@@ -45,14 +45,6 @@ export default function Home() {
             {content.heading}
           </Typography>
           
-          {/* Subheading */}
-          <Typography 
-            variant="h3" 
-            className={`font-mono tracking-wider mb-8 ${mode === 'xklokon' ? 'console-text' : ''}`}
-          >
-            {content.subheading}
-          </Typography>
-          
           {/* Description */}
           <Typography 
             variant="lead" 

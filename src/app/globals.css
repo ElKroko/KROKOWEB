@@ -13,11 +13,28 @@ body {
   letter-spacing: var(--letter-spacing);
   margin: 0;
   padding: 0;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Asegurar que los colores se apliquen a nivel de documento */
+html, body {
+  min-height: 100vh;
 }
 
 /* Utiliza los colores de acento de data-accent-color si están disponibles */
 :root[data-accent-color] {
   --accent-color: #000000; /* Valor predeterminado */
+}
+
+/* Clase para estandarizar el margen superior en todas las páginas */
+.page-title-container {
+  margin-top: 0.75rem; /* Ajustado para alinear con la altura del logo */
+  padding-top: 0.5rem;
+}
+
+/* Ajustar el margen vertical de las secciones para evitar espacios excesivos */
+section:first-of-type {
+  margin-top: 0.5rem;
 }
 
 /* Estilos para el modo xklokon - terminal/consola */

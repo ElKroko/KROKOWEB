@@ -42,7 +42,7 @@ export default function VisualArtPage() {
       {/* Header */}
       <div className="mb-20">
         <Typography variant="h1" className="text-9xl tracking-widest font-light">
-          <Highlight accentColor={accentColor}>ART</Highlight>
+          <span style={{ color: accentColor }}>ART</span>
         </Typography>
         <Typography variant="body" className="mt-6 text-xl max-w-2xl">
           Explorando la fusión entre lo digital y lo analógico a través de proyectos visuales experimentales.
@@ -78,9 +78,9 @@ export default function VisualArtPage() {
             </div>
             
             <Typography variant="h2" className="text-3xl tracking-wider">
-              <Highlight accentColor={accentColor}>
+              <span style={{ color: accentColor }}>
                 {project.title}
-              </Highlight>
+              </span>
             </Typography>
             
             <Typography variant="body" className="mt-3 max-w-md">
