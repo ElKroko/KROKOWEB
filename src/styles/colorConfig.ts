@@ -8,7 +8,7 @@ const colors = {
   
   // Accent colors for each section in light mode (kroko)
   accent: {
-    home: '#000000',       // Negro puro para la landing
+    home: '#f8f9fa',       // Blanco para la landing
     art: '#ff5f8d',        // Rosa
     programming: '#42C5B9', // Turquesa
     code: '#42C5B9',       // Turquesa (alias de programming)
@@ -24,7 +24,7 @@ const colors = {
   // Background colors for dark mode (xklokon) by section
   // These are darker variations of the accent colors
   darkBg: {
-    home: '#000000',       // Negro puro para la landing
+    home: '#212529',       // Negro para la landing
     art: '#7D3151',        // Rosa oscuro
     programming: '#103A37', // Turquesa oscuro
     code: '#103A37',       // Turquesa oscuro (alias de programming)

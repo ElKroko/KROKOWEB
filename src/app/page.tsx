@@ -12,18 +12,14 @@ export default function Home() {
   // Content variables for both modes
   const krokoContent = {
     heading: "Kroko",
-    subheading: "El ser humano, presente y emocional",
-    description: "Canto, escribo y narro mis vivencias personales con calidez y vulnerabilidad.",
-    buttonText: "Conocer a Kroko",
-    buttonLink: "/about"
+    description: "Kroko es mi alias como cantautor en Spotify. Bajo este nombre compongo y comparto canciones con un enfoque íntimo y reflexivo, mezclando letras auténticas y melodías emotivas. Escucha mi trabajo en Spotify para descubrir mi repertorio.",
+    buttonText: "Conocer a Kroko"
   };
 
   const xklokonContent = {
     heading: "XKLOKON",
-    subheading: "El imaginario creador y abstracto",
-    description: "Habito lo intangible, produzco sin filtros ni límites desde lo digital y lo onírico.",
-    buttonText: "Explorar XKLOKON",
-    buttonLink: "/visual"
+    description: "Explorador del arte digital e imaginativo. Creo composiciones visuales en TouchDesigner, producción musical en Ableton y desarrollo experiencias interactivas en la web con React, Three.js y WebGL. Fusiono tecnología y arte para dar vida a proyectos inmersivos y vanguardistas.",
+    buttonText: "Explorar XKLOKON"
   };
 
   // Active content based on mode
