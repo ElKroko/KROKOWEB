@@ -36,13 +36,13 @@ const WebcamAsciiEffect: React.FC<WebcamAsciiEffectProps> = ({
             .then(() => setIsPlaying(true))
             .catch(err => {
               console.error('Error playing video:', err);
-              setErrorMessage('Error al reproducir el video');
+              setErrorMessage('KROKO dice: No puedo reproducir el video');
             });
         }
       })
       .catch(err => {
         console.error('Error accessing webcam:', err);
-        setErrorMessage('No se pudo acceder a la cámara web');
+        setErrorMessage('XKLOKON necesita acceso a tu cámara para crear experiencias inmersivas');
       });
 
     return () => {

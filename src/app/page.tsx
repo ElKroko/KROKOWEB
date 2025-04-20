@@ -12,13 +12,13 @@ export default function Home() {
   // Content variables for both modes
   const krokoContent = {
     heading: "Kroko",
-    description: "Kroko es mi alias como cantautor en Spotify. Bajo este nombre compongo y comparto canciones con un enfoque íntimo y reflexivo, mezclando letras auténticas y melodías emotivas. Escucha mi trabajo en Spotify para descubrir mi repertorio.",
+    description: "Mi alias como productor musical de reggaetón, sonidos urbanos y electrónica. Bajo este nombre lancé mi primer álbum en 2023, fusionando ritmos contemporáneos con mi estilo personal. Un universo sonoro que refleja mi pasión por la música que comenzó desde los 11 años con la guitarra.",
     buttonText: "Conocer a Kroko"
   };
 
   const xklokonContent = {
     heading: "XKLOKON",
-    description: "Explorador del arte digital e imaginativo. Creo composiciones visuales en TouchDesigner, producción musical en Ableton y desarrollo experiencias interactivas en la web con React, Three.js y WebGL. Fusiono tecnología y arte para dar vida a proyectos inmersivos y vanguardistas.",
+    description: "Mi alter ego dedicado a dar vida a sonidos que aún no existen. Experimento con lo visual y lo sonoro: mezclo géneros musicales con texturas y ruidos en TouchDesigner, y exploro entornos 3D y WebGL para crear experiencias inmersivas en la intersección entre tecnología y arte.",
     buttonText: "Explorar XKLOKON"
   };
 
