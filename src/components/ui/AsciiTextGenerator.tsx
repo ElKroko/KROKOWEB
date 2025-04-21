@@ -108,7 +108,7 @@ const AsciiTextGenerator: React.FC<AsciiTextGeneratorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full">
       <div className="flex flex-col gap-6">
         {/* Sección superior: Entrada de texto y configuración */}
         <div className="flex flex-col lg:flex-row gap-6">
@@ -221,7 +221,7 @@ const AsciiTextGenerator: React.FC<AsciiTextGeneratorProps> = ({
               <button
                 onClick={copyToClipboard}
                 disabled={!generatedASCII}
-                className="flex items-center gap-1 px-3 py-1 rounded-md bg-accent-bg text-foreground hover:bg-accent-bg/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 px-3 py-1 rounded-md bg-accent-strong text-white hover:bg-accent-strong/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <FiCopy size={14} />
                 <span className="text-sm">Copiar</span>
@@ -229,7 +229,7 @@ const AsciiTextGenerator: React.FC<AsciiTextGeneratorProps> = ({
               <button
                 onClick={downloadAsText}
                 disabled={!generatedASCII}
-                className="flex items-center gap-1 px-3 py-1 rounded-md bg-accent-bg text-foreground hover:bg-accent-bg/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-1 px-3 py-1 rounded-md bg-accent-strong text-white hover:bg-accent-strong/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <FiDownload size={14} />
                 <span className="text-sm">Descargar</span>
@@ -253,7 +253,7 @@ const AsciiTextGenerator: React.FC<AsciiTextGeneratorProps> = ({
           )}
           
           {/* Resultado ASCII */}
-          <div className="relative min-h-[300px] max-h-[500px] overflow-auto bg-black p-4 rounded-md">
+          <div className="relative min-h-[200px] max-h-[350px] overflow-auto bg-black p-4 rounded-md">
             {isGenerating ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-accent-strong">Generando...</div>
@@ -263,7 +263,7 @@ const AsciiTextGenerator: React.FC<AsciiTextGeneratorProps> = ({
                 ref={textAreaRef}
                 readOnly
                 value={generatedASCII}
-                className="w-full h-full min-h-[300px] bg-transparent text-accent-strong font-mono resize-none border-none focus:outline-none focus:ring-0"
+                className="w-full h-full min-h-[200px] bg-transparent text-accent-strong font-mono resize-none border-none focus:outline-none focus:ring-0"
                 style={{
                   whiteSpace: 'pre',
                   overflowWrap: 'normal',

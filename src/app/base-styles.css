@@ -280,7 +280,7 @@ a:hover {
 }
 
 .tooltip-message {
-  color: var(--accent-color);
+  color: var(--text-color);
   padding: 0 1rem;
   text-align: center;
   transition: color 0.3s ease;
@@ -328,7 +328,7 @@ a:hover {
   text-align: right;
   padding: 6px 10px;
   max-width: 320px;
-  border: 1px solid var(--accent-color);
+  border: 1px solid var(--text-color);
 }
 
 .corner-tooltip:hover {
@@ -336,13 +336,13 @@ a:hover {
 }
 
 .corner-tooltip .tooltip-message {
-  color: var(--accent-color);
+  color: var(--text-color);
   text-shadow: 0 0 5px rgba(0,0,0,0.5);
   transition: color 0.3s ease;
 }
 
 .corner-tooltip:hover .tooltip-message {
-  color: var(--accent-color);
+  color: var(--text-color);
 }
 
 /* Color transition class */

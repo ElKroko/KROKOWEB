@@ -82,7 +82,7 @@ export default function AsciiPlayground() {
   const [invert, setInvert] = useState<boolean>(false);
   const [threshold, setThreshold] = useState<number>(0); // 0 = off, >0 = binary threshold (0-1)
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [resolutionFactor, setResolutionFactor] = useState<number>(100); // Nuevo: 1-200% de la resolución base
+  const [resolutionFactor, setResolutionFactor] = useState<number>(200); // Aumentado a 150% por defecto para mostrar más caracteres
 
   // Preset character sets
   const charSets = [
@@ -157,9 +157,9 @@ export default function AsciiPlayground() {
         imageRef.current = img; // Store image ref for dimensions
 
         // Calcular dimensiones máximas basadas en el factor de resolución
-        // Aumentamos la resolución base para mostrar más caracteres
-        const maxWidth = Math.floor(200 * (resolutionFactor / 100));
-        const maxHeight = Math.floor(150 * (resolutionFactor / 100));
+        // Aumentamos la resolución base significativamente para mostrar más caracteres
+        const maxWidth = Math.floor(400 * (resolutionFactor / 100));
+        const maxHeight = Math.floor(300 * (resolutionFactor / 100));
 
         // Escalar la imagen a un tamaño manejable
         const scaledImageCanvas = scaleImage(img, maxWidth, maxHeight);
@@ -234,7 +234,7 @@ export default function AsciiPlayground() {
         }
       };
     }
-  }, [inputImage, inputText, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]); // Añadir resolutionFactor a las dependencias
+  }, [inputImage, inputText, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]);
 
   // 6. Funciones de descarga
   const downloadTxt = useCallback(() => {
@@ -325,8 +325,8 @@ export default function AsciiPlayground() {
 
         img.onload = () => {
           // Calcular dimensiones máximas basadas en el factor de resolución
-          const maxWidth = Math.floor(120 * (resolutionFactor / 100));
-          const maxHeight = Math.floor(80 * (resolutionFactor / 100));
+          const maxWidth = Math.floor(300 * (resolutionFactor / 100));
+          const maxHeight = Math.floor(200 * (resolutionFactor / 100));
 
           // Escalar la imagen a un tamaño manejable
           const scaledImageCanvas = scaleImage(img, maxWidth, maxHeight);
@@ -405,7 +405,7 @@ export default function AsciiPlayground() {
 
     // Limpiar el intervalo cuando se cierre la vista previa
     return () => clearInterval(previewInterval);
-  }, [inputImage, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]); // Añadir resolutionFactor a las dependencias
+  }, [inputImage, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]);
 
   // 8. Descargar como GIF
   const downloadAsGif = useCallback(() => {
@@ -416,333 +416,330 @@ export default function AsciiPlayground() {
     alert("Función en desarrollo: La generación de GIF requerirá implementar una librería externa como gif.js");
 
     // Código placeholder para cuando tengamos implementada la librería
-    // const gif = new GIF({
-    //   workers: 2,
-    //   quality: 10,
-    //   width: canvasWidth,
-    //   height: canvasHeight
-    // });
+    const gif = new GIF({
+      workers: 2,
+      quality: 10,
+      width: canvasWidth,
+      height: canvasHeight
+    });
 
-    // frames.forEach(frame => {
-    //   // Convertir ASCII a imagen para cada frame
-    //   // Añadir al GIF
-    //   gif.addFrame(frameCanvas, {delay: 100});
-    // });
+    frames.forEach(frame => {
+      // Convertir ASCII a imagen para cada frame
+      // Añadir al GIF
+      gif.addFrame(frameCanvas, {delay: 100});
+    });
 
-    // gif.on('finished', blob => {
-    //   const url = URL.createObjectURL(blob);
-    //   const a = document.createElement('a');
-    //   a.href = url;
-    //   a.download = 'ascii-animation.gif';
-    //   a.click();
-    //   URL.revokeObjectURL(url);
-    // });
+    gif.on('finished', blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ascii-animation.gif';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
 
-    // gif.render();
+    gif.render();
   }, [animationFrames]);
 
   // Definir estilos dinámicos según el modo
-  const buttonStyle = mode === 'xklokon' 
-    ? 'bg-card-bg hover:bg-accent-color/20 text-accent-color border border-accent-color/40' 
-    : 'bg-accent-color/10 hover:bg-accent-color/30 text-accent-color border border-accent-color/20';
+  const downloadButtonStyle = 'bg-accent-color text-white hover:bg-accent-color/90';
+  const animateButtonStyle = 'bg-transparent hover:bg-accent-color/10 text-accent-color border border-accent-color';
   
-  const primaryButtonStyle = mode === 'xklokon'
-    ? 'bg-accent-color/30 hover:bg-accent-color/50 text-accent-color border-none'
-    : 'bg-accent-color/80 hover:bg-accent-color text-bg border-none';
+  const inputBgStyle = mode === 'xklokon' 
+    ? 'bg-transparent border border-text-color/30 text-white' 
+    : 'bg-transparent border border-text-color/30 text-white';
 
   return (
-    <div className="ascii-playground grid grid-cols-3 gap-4 p-4">
-      <aside className="controls col-span-1 space-y-4">
-        {/* Input Section */}
-        <div className="text-center mb-2">
-          <label
-            htmlFor="imageUpload"
-            className="block text-sm font-medium text-accent-color mb-2"
-          >
-            Selecciona una imagen
-          </label>
+    <div className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <aside className="controls md:col-span-1 space-y-4">
+          {/* Input Section */}
+          <div className="text-center mb-2">
+            <label
+              htmlFor="imageUpload"
+              className="block text-sm font-medium text-accent-color mb-2"
+            >
+              Selecciona una imagen
+            </label>
 
-          {/* Vista previa de la imagen cargada */}
-          {inputImage && (
-            <div className="mb-3 relative rounded-lg overflow-hidden max-w-xs mx-auto">
-              <img 
-                src={inputImage} 
-                alt="Preview" 
-                className="w-full h-auto object-contain max-h-[150px]"
+            {/* Vista previa de la imagen cargada */}
+            {inputImage && (
+              <div className="mb-3 relative rounded-lg overflow-hidden max-w-xs mx-auto">
+                <img 
+                  src={inputImage} 
+                  alt="Preview" 
+                  className="w-full h-auto object-contain max-h-[150px]"
+                />
+              </div>
+            )}
+
+            <div className="flex justify-center">
+              <input
+                id="imageUpload"
+                type="file"
+                accept="image/*"
+                onChange={handleUpload}
+                className="w-auto text-sm file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accent-color/20 file:text-accent-color hover:file:bg-accent-color/30"
               />
+            </div>
+          </div>
+
+          <hr className="border-accent-color/20 my-2" />
+
+          {/* Controles organizados en un diseño compacto */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Primera columna */}
+            <div className="space-y-3">
+              <div>
+                <label
+                  htmlFor="cellSize"
+                  className="block text-sm font-medium text-accent-color"
+                >
+                  Cell Size: {cellSize}px
+                </label>
+                <input
+                  id="cellSize"
+                  type="range"
+                  min="2"
+                  max="16"
+                  step="1"
+                  value={cellSize}
+                  onChange={(e) => setCellSize(parseInt(e.target.value, 10))}
+                  className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                  style={{ accentColor: accentColor }}
+                />
+              </div>
+              
+              <div>
+                <label
+                  htmlFor="brightness"
+                  className="block text-sm font-medium text-accent-color"
+                >
+                  Brightness: {brightness.toFixed(1)}
+                </label>
+                <input
+                  id="brightness"
+                  type="range"
+                  min="0"
+                  max="3"
+                  step="0.1"
+                  value={brightness}
+                  onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                  style={{ accentColor: accentColor }}
+                />
+              </div>
+              
+              <div>
+                <label
+                  htmlFor="threshold"
+                  className="block text-sm font-medium text-accent-color"
+                >
+                  Threshold: {threshold > 0 ? threshold.toFixed(2) : 'Off'}
+                </label>
+                <input
+                  id="threshold"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={threshold}
+                  onChange={(e) => setThreshold(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                  style={{ accentColor: accentColor }}
+                />
+              </div>
+            </div>
+            
+            {/* Segunda columna */}
+            <div className="space-y-3">
+              <div>
+                <label
+                  htmlFor="resolutionFactor"
+                  className="block text-sm font-medium text-accent-color"
+                >
+                  Resolution: {resolutionFactor}%
+                </label>
+                <input
+                  id="resolutionFactor"
+                  type="range"
+                  min="50"
+                  max="300"
+                  step="10"
+                  value={resolutionFactor}
+                  onChange={(e) => setResolutionFactor(parseInt(e.target.value, 10))}
+                  className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                  style={{ accentColor: accentColor }}
+                />
+              </div>
+              
+              <div>
+                <label
+                  htmlFor="contrast"
+                  className="block text-sm font-medium text-accent-color"
+                >
+                  Contrast: {contrast.toFixed(1)}
+                </label>
+                <input
+                  id="contrast"
+                  type="range"
+                  min="0"
+                  max="3"
+                  step="0.1"
+                  value={contrast}
+                  onChange={(e) => setContrast(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                  style={{ accentColor: accentColor }}
+                />
+              </div>
+              
+              <div className="flex items-center mt-2">
+                <input
+                  id="invert"
+                  type="checkbox"
+                  checked={invert}
+                  onChange={(e) => setInvert(e.target.checked)}
+                  className="h-4 w-4 focus:ring-accent-color text-accent-color border-accent-color/30 rounded"
+                />
+                <label htmlFor="invert" className="ml-2 block text-sm text-accent-color">
+                  Invert Colors
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          {/* Character Set Selector */}
+          <div>
+            <label
+              htmlFor="charSetSelect"
+              className="block text-sm font-medium text-accent-color mb-1"
+            >
+              Character Set
+            </label>
+            <div className="flex gap-2">
+              <select
+                id="charSetSelect"
+                onChange={(e) => {
+                  const selectedSet = charSets.find(set => set.name === e.target.value);
+                  if (selectedSet) setChars(selectedSet.value);
+                }}
+                value={charSets.find(set => set.value === chars)?.name || ''}
+                className={`shadow-sm block w-full sm:text-sm border-accent-color/30 rounded-md p-1.5 bg-transparent text-white focus:ring-accent-color focus:border-accent-color`}
+              >
+                <option value="" disabled>Select a preset</option>
+                {charSets.map(set => (
+                  <option key={set.name} value={set.name} className={mode === 'xklokon' ? 'bg-card-bg' : 'bg-accent-color/5'}>
+                    {set.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="mt-2">
+              <label htmlFor="chars" className="block text-xs text-accent-color/70 mb-1">
+                Custom Characters (Darkest → Lightest)
+              </label>
+              <input
+                id="chars"
+                type="text"
+                value={chars}
+                onChange={(e) => setChars(e.target.value)}
+                className={`shadow-sm focus:ring-accent-color focus:border-accent-color block w-full sm:text-sm border-accent-color/30 rounded-md p-1 bg-transparent text-white`}
+              />
+            </div>
+          </div>
+
+          <hr className="border-accent-color/20 my-2" />
+
+          {/* Botones de acción organizados */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={downloadTxt}
+              disabled={!ascii || isProcessing}
+              className={`inline-flex justify-center py-2 px-3 text-xs font-medium rounded-md transition-colors ${downloadButtonStyle} disabled:opacity-50`}
+            >
+              Download .txt
+            </button>
+            <button
+              onClick={downloadPng}
+              disabled={!ascii || isProcessing || !inputImage}
+              className={`inline-flex justify-center py-2 px-3 text-xs font-medium rounded-md transition-colors ${downloadButtonStyle} disabled:opacity-50`}
+            >
+              Download .png
+            </button>
+          </div>
+          
+          {/* Animation Controls */}
+          {inputImage && (
+            <div className="space-y-2">
+              <button
+                onClick={generateAnimation}
+                disabled={isGeneratingAnimation || !inputImage}
+                className={`w-full inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md transition-colors ${animateButtonStyle} disabled:opacity-50`}
+              >
+                {isGeneratingAnimation ? 'Generando...' : 'Generar animación ASCII'}
+              </button>
+
+              {animationFrames.length > 0 && (
+                <>
+                  <div className="flex">
+                    <button
+                      onClick={downloadAsGif}
+                      disabled={isGeneratingAnimation}
+                      className={`flex-1 inline-flex justify-center py-1 px-2 text-xs font-medium rounded-md transition-colors ${downloadButtonStyle} disabled:opacity-50`}
+                    >
+                      Descargar animación
+                    </button>
+                    <span className="text-xs px-2 py-1 flex items-center text-accent-color/70">
+                      {animationFrames.length} frames
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           )}
-
-          <div className="flex justify-center">
-            <input
-              id="imageUpload"
-              type="file"
-              accept="image/*"
-              onChange={handleUpload}
-              className="w-auto text-sm file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accent-color/20 file:text-accent-color hover:file:bg-accent-color/30"
-            />
-          </div>
-        </div>
-
-        <hr className="border-accent-color/20 my-2" />
-
-        {/* Controles organizados en un diseño compacto */}
-        <div className="grid grid-cols-2 gap-3">
-          {/* Primera columna */}
-          <div className="space-y-3">
-            <div>
-              <label
-                htmlFor="cellSize"
-                className="block text-sm font-medium text-accent-color"
-              >
-                Cell Size: {cellSize}px
-              </label>
-              <input
-                id="cellSize"
-                type="range"
-                min="2"
-                max="16"
-                step="1"
-                value={cellSize}
-                onChange={(e) => setCellSize(parseInt(e.target.value, 10))}
-                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: accentColor }}
-              />
-            </div>
-            
-            <div>
-              <label
-                htmlFor="brightness"
-                className="block text-sm font-medium text-accent-color"
-              >
-                Brightness: {brightness.toFixed(1)}
-              </label>
-              <input
-                id="brightness"
-                type="range"
-                min="0"
-                max="3"
-                step="0.1"
-                value={brightness}
-                onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: accentColor }}
-              />
-            </div>
-            
-            <div>
-              <label
-                htmlFor="threshold"
-                className="block text-sm font-medium text-accent-color"
-              >
-                Threshold: {threshold > 0 ? threshold.toFixed(2) : 'Off'}
-              </label>
-              <input
-                id="threshold"
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={threshold}
-                onChange={(e) => setThreshold(parseFloat(e.target.value))}
-                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: accentColor }}
-              />
-            </div>
-          </div>
           
-          {/* Segunda columna */}
-          <div className="space-y-3">
-            <div>
-              <label
-                htmlFor="resolutionFactor"
-                className="block text-sm font-medium text-accent-color"
+          {isProcessing && (
+            <p className="text-sm text-center text-accent-color/70">Procesando...</p>
+          )}
+        </aside>
+
+        <main className={`preview md:col-span-2 ${
+          mode === 'xklokon' ? 'bg-card-bg' : 'bg-accent-color/5'
+        } p-4 rounded-md overflow-auto relative border border-accent-color/20`} 
+        style={{ height: 'calc(100vh - 150px)', maxHeight: 'calc(100vh - 150px)' }}>
+          {/* Canvas is used offscreen for processing, result shown in <pre> */}
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+          {/* Animation Preview */}
+          {showAnimationPreview && animationFrames.length > 0 ? (
+            <div className="animation-preview h-full">
+              <div className="mb-2 flex justify-between items-center">
+                <span className="text-sm font-medium text-accent-color">Vista previa de animación</span>
+                <button 
+                  onClick={() => setShowAnimationPreview(false)}
+                  className="text-xs px-2 py-1 bg-accent-color/10 text-accent-color rounded hover:bg-accent-color/20"
+                >
+                  Volver al ASCII
+                </button>
+              </div>
+              <pre
+                className="ascii-output text-xs leading-none font-mono whitespace-pre text-text overflow-auto"
+                style={{ lineHeight: '0.8em', height: 'calc(100% - 30px)' }}
               >
-                Resolution: {resolutionFactor}%
-              </label>
-              <input
-                id="resolutionFactor"
-                type="range"
-                min="50"
-                max="200"
-                step="10"
-                value={resolutionFactor}
-                onChange={(e) => setResolutionFactor(parseInt(e.target.value, 10))}
-                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: accentColor }}
-              />
+                {animationFrames[animationPreviewIndex] || 'Generando...'}
+              </pre>
             </div>
-            
-            <div>
-              <label
-                htmlFor="contrast"
-                className="block text-sm font-medium text-accent-color"
-              >
-                Contrast: {contrast.toFixed(1)}
-              </label>
-              <input
-                id="contrast"
-                type="range"
-                min="0"
-                max="3"
-                step="0.1"
-                value={contrast}
-                onChange={(e) => setContrast(parseFloat(e.target.value))}
-                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
-                style={{ accentColor: accentColor }}
-              />
-            </div>
-            
-            <div className="flex items-center mt-2">
-              <input
-                id="invert"
-                type="checkbox"
-                checked={invert}
-                onChange={(e) => setInvert(e.target.checked)}
-                className="h-4 w-4 focus:ring-accent-color text-accent-color border-accent-color/30 rounded"
-              />
-              <label htmlFor="invert" className="ml-2 block text-sm text-accent-color">
-                Invert Colors
-              </label>
-            </div>
-          </div>
-        </div>
-        
-        {/* Character Set Selector */}
-        <div>
-          <label
-            htmlFor="charSetSelect"
-            className="block text-sm font-medium text-accent-color mb-1"
-          >
-            Character Set
-          </label>
-          <div className="flex gap-2">
-            <select
-              id="charSetSelect"
-              onChange={(e) => {
-                const selectedSet = charSets.find(set => set.name === e.target.value);
-                if (selectedSet) setChars(selectedSet.value);
-              }}
-              value={charSets.find(set => set.value === chars)?.name || ''}
-              className={`shadow-sm block w-full sm:text-sm border-accent-color/30 rounded-md p-1.5 ${
-                mode === 'xklokon' ? 'bg-card-bg text-text' : 'bg-white text-gray-900'
-              } focus:ring-accent-color focus:border-accent-color`}
-            >
-              <option value="" disabled>Select a preset</option>
-              {charSets.map(set => (
-                <option key={set.name} value={set.name}>
-                  {set.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="mt-2">
-            <label htmlFor="chars" className="block text-xs text-accent-color/70 mb-1">
-              Custom Characters (Darkest → Lightest)
-            </label>
-            <input
-              id="chars"
-              type="text"
-              value={chars}
-              onChange={(e) => setChars(e.target.value)}
-              className={`shadow-sm focus:ring-accent-color focus:border-accent-color block w-full sm:text-sm border-accent-color/30 rounded-md p-1 ${
-                mode === 'xklokon' ? 'bg-card-bg text-text' : 'bg-white text-gray-900'
-              }`}
-            />
-          </div>
-        </div>
-
-        <hr className="border-accent-color/20 my-2" />
-
-        {/* Botones de acción organizados */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={downloadTxt}
-            disabled={!ascii || isProcessing}
-            className={`inline-flex justify-center py-2 px-3 text-xs font-medium rounded-md transition-colors ${primaryButtonStyle} disabled:opacity-50`}
-          >
-            Download .txt
-          </button>
-          <button
-            onClick={downloadPng}
-            disabled={!ascii || isProcessing || !inputImage}
-            className={`inline-flex justify-center py-2 px-3 text-xs font-medium rounded-md transition-colors ${buttonStyle} disabled:opacity-50`}
-          >
-            Download .png
-          </button>
-        </div>
-        
-        {/* Animation Controls */}
-        {inputImage && (
-          <div className="space-y-2">
-            <button
-              onClick={generateAnimation}
-              disabled={isGeneratingAnimation || !inputImage}
-              className={`w-full inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md transition-colors ${primaryButtonStyle} disabled:opacity-50`}
-            >
-              {isGeneratingAnimation ? 'Generando...' : 'Generar animación ASCII'}
-            </button>
-
-            {animationFrames.length > 0 && (
-              <>
-                <div className="flex">
-                  <button
-                    onClick={downloadAsGif}
-                    disabled={isGeneratingAnimation}
-                    className={`flex-1 inline-flex justify-center py-1 px-2 text-xs font-medium rounded-md transition-colors ${buttonStyle} disabled:opacity-50`}
-                  >
-                    Descargar animación
-                  </button>
-                  <span className="text-xs px-2 py-1 flex items-center text-accent-color/70">
-                    {animationFrames.length} frames
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-        
-        {isProcessing && (
-          <p className="text-sm text-center text-accent-color/70">Procesando...</p>
-        )}
-      </aside>
-
-      <main className={`preview col-span-2 ${
-        mode === 'xklokon' ? 'bg-card-bg' : 'bg-accent-color/5'
-      } p-4 rounded-md overflow-auto relative border border-accent-color/20`} 
-      style={{ height: '550px', maxHeight: '550px' }}>
-        {/* Canvas is used offscreen for processing, result shown in <pre> */}
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-        {/* Animation Preview */}
-        {showAnimationPreview && animationFrames.length > 0 ? (
-          <div className="animation-preview h-full">
-            <div className="mb-2 flex justify-between items-center">
-              <span className="text-sm font-medium text-accent-color">Vista previa de animación</span>
-              <button 
-                onClick={() => setShowAnimationPreview(false)}
-                className="text-xs px-2 py-1 bg-accent-color/10 text-accent-color rounded hover:bg-accent-color/20"
-              >
-                Volver al ASCII
-              </button>
-            </div>
+          ) : (
             <pre
-              className="ascii-output text-sm leading-none font-mono whitespace-pre break-all text-text overflow-auto"
-              style={{ lineHeight: '0.8em', height: 'calc(100% - 30px)' }}
+              className="ascii-output text-xs leading-none font-mono whitespace-pre text-text overflow-auto h-full"
+              style={{ lineHeight: '0.8em' }}
             >
-              {animationFrames[animationPreviewIndex] || 'Generando...'}
+              {ascii || 'Sube una imagen para convertirla en arte ASCII...'}
             </pre>
-          </div>
-        ) : (
-          <pre
-            className="ascii-output text-sm leading-none font-mono whitespace-pre break-all text-text overflow-auto h-full"
-            style={{ lineHeight: '0.8em' }}
-          >
-            {ascii || 'Sube una imagen para convertirla en arte ASCII...'}
-          </pre>
-        )}
-      </main>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
