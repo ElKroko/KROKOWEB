@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Typography from '@/components/ui/Typography';
 import WebcamAsciiEffect from '@/components/ui/WebcamAsciiEffect';
 import AsciiTextGenerator from '@/components/ui/AsciiTextGenerator';
+import AsciiPlayground from '@/components/AsciiPlayground';
 import { base64ImageToAscii } from '@/lib/ascii-utils';
 import { Canvas, useThree } from '@react-three/fiber';
 import { EffectComposer, Glitch, Scanline, Bloom, DepthOfField, Noise } from '@react-three/postprocessing';
@@ -194,9 +195,14 @@ export default function CreatePage() {
       description: 'Captura fotos y aplica efectos visuales usando WebGL'
     },
     {
+      id: 'ascii-text',
+      name: 'ASCII Text',
+      description: 'Genera texto ASCII con diversos estilos y fuentes'
+    },
+    {
       id: 'ascii-art',
-      name: 'Arte ASCII',
-      description: 'Genera arte ASCII a partir de texto con diversos estilos'
+      name: 'ASCII Art',
+      description: 'Convierte imágenes a arte ASCII y crea animaciones'
     },
     {
       id: 'audio-visualizer',
@@ -476,6 +482,8 @@ export default function CreatePage() {
     switch (activeToolId) {
       case 'photo-effects':
         return renderPhotoEffects();
+      case 'ascii-text':
+        return renderAsciiText();
       case 'ascii-art':
         return renderAsciiArt();
       default:
@@ -757,18 +765,35 @@ export default function CreatePage() {
     );
   };
 
-  // Renderizar herramienta de generación de arte ASCII con texto
-  const renderAsciiArt = () => {
+  // Renderizar herramienta de generación de texto ASCII
+  const renderAsciiText = () => {
     return (
       <div className="w-full">
         <div className="mb-8">
-          <Typography variant="h2" className="text-accent-strong mb-2">Generador de Arte ASCII</Typography>
+          <Typography variant="h2" className="text-accent-strong mb-2">Generador de Texto ASCII</Typography>
           <Typography variant="p" className="mb-6 max-w-3xl">
-            Convierte texto en arte ASCII con diversos estilos. Prueba diferentes fuentes y efectos para crear firmas, 
+            Convierte texto en arte ASCII con diversos estilos y fuentes. Prueba diferentes fuentes para crear firmas, 
             banners o diseños únicos para tus proyectos.
           </Typography>
           
           <AsciiTextGenerator initialText="KROKO" />
+        </div>
+      </div>
+    );
+  };
+
+  // Renderizar herramienta de generación de arte ASCII a partir de imágenes
+  const renderAsciiArt = () => {
+    return (
+      <div className="w-full">
+        <div className="mb-8">
+          <Typography variant="h2" className="text-accent-strong mb-2">Playground de Arte ASCII</Typography>
+          <Typography variant="p" className="mb-6 max-w-3xl">
+            Convierte imágenes en arte ASCII o crea directamente con texto. Ajusta los parámetros para personalizar el resultado
+            y descarga tu creación como archivo de texto, imagen o animación.
+          </Typography>
+          
+          <AsciiPlayground />
         </div>
       </div>
     );
