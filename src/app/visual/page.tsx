@@ -38,7 +38,7 @@ export default function VisualArtPage() {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   return (
-    <div className="p-16 min-h-screen">
+    <div className="p-8 min-h-screen">
       {/* Header */}
       <div className="mb-20">
         <Typography variant="h1" className="text-9xl tracking-widest font-light">

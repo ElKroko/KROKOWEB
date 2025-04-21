@@ -58,11 +58,21 @@ export default function Home() {
             <button 
               onClick={toggleMode}
               className={`
-                px-8 py-3 border border-current 
+                px-8 py-3 border transition-all font-mono
                 ${mode === 'kroko' ? 'rounded-md' : 'rounded-none'} 
-                transition-all font-mono
-                ${mode === 'kroko' ? 'hover:bg-black hover:text-white' : 'hover:bg-white hover:text-black'}
               `}
+              style={{ 
+                borderColor: 'var(--accent-color)',
+                color: 'var(--accent-color)'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--accent-color)';
+                e.currentTarget.style.color = 'var(--bg)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--accent-color)';
+              }}
             >
               Cambiar a {mode === 'kroko' ? 'XKLOKON' : 'Kroko'}
             </button>
@@ -100,10 +110,10 @@ export default function Home() {
       )}
 
       {/* Visual separator based on mode */}
-      <div className="absolute bottom-12 w-24 h-px bg-current opacity-30"></div>
+      <div className="absolute bottom-12 w-24 h-px" style={{ backgroundColor: 'var(--accent-color)' }}></div>
       
       {/* Mode indicator */}
-      <div className="absolute bottom-6 text-xs font-mono tracking-widest opacity-50">
+      <div className="absolute bottom-6 text-xs font-mono tracking-widest" style={{ color: 'var(--accent-color)' }}>
         {mode.toUpperCase()} MODE
       </div>
     </div>

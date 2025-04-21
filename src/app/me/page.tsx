@@ -104,7 +104,7 @@ export default function MePage() {
   ];
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden w-full">
+    <div className="p-8 min-h-screen">
       {activeImage && (
         <div 
           className="absolute pointer-events-none z-0 transition-all duration-500"
@@ -127,9 +127,9 @@ export default function MePage() {
       )}
 
       <div className="h-full flex flex-col">
-        <div className="flex-grow flex flex-col p-0 pl-8 w-full overflow-x-hidden pr-8" style={{ maxWidth: "100%" }}>
+        <div className="flex-grow flex flex-col w-full overflow-x-hidden">
           <Typography variant="h1" className="mb-6 text-accent-strong text-left mt-8">
-            <span className={mode === 'xklokon' ? 'font-mono tracking-tight' : 'tracking-widest'}>
+            <span className="tracking-widest">
               ¿krokoxklokon?
             </span>
           </Typography>

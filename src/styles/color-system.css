@@ -353,21 +353,12 @@ html[data-section='contact']:not([data-mode='xklokon']),
   color: var(--contact-text-dark);
 }
 
-/* Tipografía por modo */
-/* Modo kroko: tipografía sans-serif minimalista */
-:root:not([data-mode='xklokon']) {
+/* Tipografía unificada para ambos modos */
+:root {
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
   --font-weight-normal: 300;
   --font-weight-bold: 600;
   --letter-spacing: 0.02em;
-}
-
-/* Modo xklokon: tipografía monoespaciada estilo terminal */
-:root[data-mode='xklokon'] {
-  --font-family: 'Fira Code', 'IBM Plex Mono', 'Courier New', monospace;
-  --font-weight-normal: 400;
-  --font-weight-bold: 700;
-  --letter-spacing: 0;
 }
 
 /* Aplica las fuentes según el modo */

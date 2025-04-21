@@ -31,13 +31,13 @@ export default function Section({
   return (
     <section 
       id={id} 
-      className={`py-12 sm:py-16 md:py-20 ${backgroundClasses[background]} ${className}`}
+      className={`${backgroundClasses[background]} ${className}`}
     >
-      <div className={`${fullWidth ? 'w-full' : 'container mx-auto px-4'}`}>
+      <div className={`${fullWidth ? 'w-full' : 'w-full'}`}>
         {(title || subtitle) && (
-          <div className="text-center mb-12">
+          <div className="mb-8">
             {title && <h2 className="text-3xl sm:text-4xl font-bold mb-4">{title}</h2>}
-            {subtitle && <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">{subtitle}</p>}
+            {subtitle && <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl">{subtitle}</p>}
           </div>
         )}
         {children}

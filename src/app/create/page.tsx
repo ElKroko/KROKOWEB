@@ -3,7 +3,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Typography from '@/components/ui/Typography';
 import WebcamAsciiEffect from '@/components/ui/WebcamAsciiEffect';
+import AsciiTextGenerator from '@/components/ui/AsciiTextGenerator';
 import { base64ImageToAscii } from '@/lib/ascii-utils';
+import { Canvas, useThree } from '@react-three/fiber';
+import { EffectComposer, Glitch, Scanline, Bloom, DepthOfField, Noise } from '@react-three/postprocessing';
+import * as THREE from 'three';
+import { Vector2 } from 'three';
 
 // Definir tipos para los efectos
 type Effect = {
@@ -12,6 +17,18 @@ type Effect = {
   asciiEffect?: 'none' | 'grayscale' | 'sepia' | 'invert' | 'blur' | 'brightness' | 'contrast' | 'hue-rotate' | 'saturate' | 'ascii';
   description?: string;
   config?: { [key: string]: number };
+  type: 'css' | 'webgl' | 'ascii';
+};
+
+// Definir tipos para la configuración de los efectos
+type EffectConfig = {
+  segments?: number;
+  density?: number;
+  opacity?: number;
+  threshold?: number;
+  intensity?: number;
+  frequency?: number;
+  [key: string]: number | undefined;
 };
 
 // Definir tipos para las herramientas creativas
@@ -22,24 +39,164 @@ type CreativeTool = {
   description: string;
 };
 
+// Componente para efectos WebGL
+const WebGLEffect = ({ photo, effect, config = {} as EffectConfig }: { photo: string, effect: string, config?: EffectConfig }) => {
+  return (
+    <div className="w-full h-full aspect-video">
+      <Canvas>
+        <mesh>
+          <planeGeometry args={[2, 2]} />
+          <meshBasicMaterial>
+            <Texture url={photo} />
+          </meshBasicMaterial>
+        </mesh>
+        <EffectComposer>
+          {effect === 'glitch' ? (
+            <Glitch
+              delay={new Vector2(1.5, 3.5)}
+              duration={new Vector2(0.2, 0.4)}
+              strength={new Vector2(0.2, 0.4)}
+              active
+              ratio={0.85}
+            />
+          ) : null}
+          {effect === 'scanline' ? (
+            <Scanline density={config.density || 1.5} opacity={config.opacity || 0.25} />
+          ) : null}
+          {effect === 'noise' ? (
+            <Noise opacity={config.opacity || 0.25} />
+          ) : null}
+          {effect === 'bloom' ? (
+            <Bloom luminanceThreshold={config.threshold || 0.5} intensity={config.intensity || 1.5} />
+          ) : null}
+          {effect === 'vaporwave' ? (
+            <>
+              <Bloom luminanceThreshold={0.2} intensity={2} />
+              <Scanline density={2} opacity={0.1} />
+              <Noise opacity={0.05} />
+              <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+            </>
+          ) : null}
+        </EffectComposer>
+      </Canvas>
+    </div>
+  );
+};
+
+// Componente para renderizar una textura en WebGL
+const Texture = ({ url }: { url: string }) => {
+  const texture = new THREE.TextureLoader().load(url);
+  const { viewport } = useThree();
+  
+  return (
+    <sprite scale={[viewport.width, viewport.height, 1]}>
+      <spriteMaterial map={texture} />
+    </sprite>
+  );
+};
+
+// Componente para efecto Kaleidoscope
+const KaleidoscopeEffect = ({ photo, config = {} as EffectConfig }: { photo: string, config?: EffectConfig }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  
+  useEffect(() => {
+    if (!canvasRef.current || !photo) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    const img = new Image();
+    img.onload = () => {
+      setLoaded(true);
+      
+      const segments = config.segments || 8;
+      const angleStep = (Math.PI * 2) / segments;
+      
+      canvas.width = 500;
+      canvas.height = 500;
+      
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) * 0.8;
+      
+      // Dibujar el kaleidoscopio
+      const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        
+        for (let i = 0; i < segments; i++) {
+          ctx.save();
+          ctx.rotate(angleStep * i);
+          
+          // Dibujar un segmento de la imagen
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.arc(0, 0, radius, -angleStep/2, angleStep/2);
+          ctx.closePath();
+          ctx.clip();
+          
+          // Calcular posición de la imagen para este segmento
+          const scale = 1.5;
+          const imgWidth = img.width * scale;
+          const imgHeight = img.height * scale;
+          ctx.drawImage(img, -imgWidth/2, -imgHeight/2, imgWidth, imgHeight);
+          
+          ctx.restore();
+        }
+        
+        ctx.restore();
+        
+        // Animar para el siguiente frame
+        requestAnimationFrame(draw);
+      };
+      
+      draw();
+    };
+    
+    img.src = photo;
+    
+    return () => {
+      // Limpiar animación si es necesario
+    };
+  }, [photo, config]);
+  
+  return (
+    <div className="w-full h-full flex items-center justify-center">
+      <canvas 
+        ref={canvasRef} 
+        className={`w-full aspect-square border-2 border-accent-strong rounded-lg ${!loaded ? 'bg-gray-900' : ''}`}
+      />
+      {!loaded && <div className="absolute inset-0 flex items-center justify-center">Cargando...</div>}
+    </div>
+  );
+};
+
 export default function CreatePage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [cameraMinimized, setCameraMinimized] = useState(false);
   const [selectedEffect, setSelectedEffect] = useState<Effect | null>(null);
   const [showAsciiCamera, setShowAsciiCamera] = useState(false);
   const [photoAscii, setPhotoAscii] = useState<string>('');
   const [isGeneratingAscii, setIsGeneratingAscii] = useState(false);
   const [activeToolId, setActiveToolId] = useState<string>('photo-effects');
+  const [showEffectsGrid, setShowEffectsGrid] = useState(false);
   
   // Lista de herramientas creativas
   const creativeTools: CreativeTool[] = [
     {
       id: 'photo-effects',
       name: 'Efectos de Foto',
-      description: 'Captura fotos y aplica efectos visuales, incluyendo ASCII art'
+      description: 'Captura fotos y aplica efectos visuales usando WebGL'
+    },
+    {
+      id: 'ascii-art',
+      name: 'Arte ASCII',
+      description: 'Genera arte ASCII a partir de texto con diversos estilos'
     },
     {
       id: 'audio-visualizer',
@@ -50,84 +207,95 @@ export default function CreatePage() {
       id: 'generative-art',
       name: 'Arte Generativo',
       description: 'Genera patrones y obras de arte algorítmicas'
-    },
-    {
-      id: 'text-to-image',
-      name: 'Texto a Imagen',
-      description: 'Convierte texto en imágenes artísticas'
     }
   ];
 
-  // Lista de efectos para aplicar a las fotos
-  const effects: Effect[] = [
+  // Lista de efectos CSS tradicionales para aplicar a las fotos
+  const cssEffects: Effect[] = [
     { 
       name: "Normal", 
       filter: "none",
       asciiEffect: "none",
-      description: "Imagen original sin ningún filtro aplicado" 
+      description: "Imagen original sin ningún filtro aplicado",
+      type: 'css'
     },
     { 
       name: "Grayscale", 
       filter: "grayscale(100%)",
       asciiEffect: "grayscale",
       description: "Convierte la imagen a escala de grises (blanco y negro)",
-      config: { intensity: 100 }
+      config: { intensity: 100 },
+      type: 'css'
     },
     { 
       name: "Sepia", 
       filter: "sepia(100%)",
       asciiEffect: "sepia",
       description: "Aplica un tono marrón-amarillento que da un aspecto antiguo",
-      config: { intensity: 100 }
+      config: { intensity: 100 },
+      type: 'css'
     },
     { 
       name: "Invert", 
       filter: "invert(100%)",
       asciiEffect: "invert",
       description: "Invierte todos los colores de la imagen",
-      config: { intensity: 100 }
+      config: { intensity: 100 },
+      type: 'css'
     },
     { 
       name: "Blur", 
       filter: "blur(4px)",
       asciiEffect: "blur",
       description: "Aplica un desenfoque a toda la imagen",
-      config: { radius: 4 }
-    },
-    { 
-      name: "Brightness", 
-      filter: "brightness(150%)",
-      asciiEffect: "brightness",
-      description: "Aumenta el brillo de la imagen",
-      config: { intensity: 150 }
-    },
-    { 
-      name: "Contrast", 
-      filter: "contrast(200%)",
-      asciiEffect: "contrast",
-      description: "Aumenta el contraste entre colores claros y oscuros",
-      config: { intensity: 200 }
-    },
-    { 
-      name: "Hue Rotate", 
-      filter: "hue-rotate(90deg)",
-      asciiEffect: "hue-rotate",
-      description: "Rota los colores de la imagen en el círculo cromático",
-      config: { degrees: 90 }
-    },
-    { 
-      name: "Saturate", 
-      filter: "saturate(200%)",
-      asciiEffect: "saturate",
-      description: "Aumenta la saturación de los colores",
-      config: { intensity: 200 }
-    },
-    { 
-      name: "ASCII", 
+      config: { radius: 4 },
+      type: 'css'
+    }
+  ];
+  
+  // Nuevos efectos WebGL
+  const webglEffects: Effect[] = [
+    {
+      name: "Glitch",
       filter: "none",
-      asciiEffect: "ascii",
-      description: "Convierte la imagen en caracteres ASCII, dando un efecto retro de terminal",
-      config: { resolution: 80 }
+      description: "Efecto de fallos digitales que distorsiona la imagen con cortes y desplazamientos",
+      config: { intensity: 50, frequency: 0.5 },
+      type: 'webgl'
+    },
+    {
+      name: "Scanline",
+      filter: "none",
+      description: "Líneas horizontales que simulan pantallas antiguas CRT",
+      config: { density: 1.5, opacity: 0.25 },
+      type: 'webgl'
+    },
+    {
+      name: "Noise",
+      filter: "none",
+      description: "Aplica ruido digital aleatorio a la imagen, similar a la estática de TV",
+      config: { opacity: 0.25 },
+      type: 'webgl'
+    },
+    {
+      name: "Bloom",
+      filter: "none",
+      description: "Crea un resplandor luminoso alrededor de las áreas brillantes",
+      config: { threshold: 0.5, intensity: 1.5 },
+      type: 'webgl'
+    },
+    {
+      name: "Vaporwave",
+      filter: "none",
+      description: "Estética retro de los 80s y 90s con colores saturados y brillantes",
+      config: { intensity: 2 },
+      type: 'webgl'
+    },
+    {
+      name: "Kaleidoscopio",
+      filter: "none",
+      description: "Crea un patrón caleidoscópico reflectante a partir de la imagen",
+      config: { segments: 8 },
+      type: 'webgl'
     }
   ];
 
@@ -135,21 +303,21 @@ export default function CreatePage() {
     // Reiniciar estado cuando cambia la herramienta activa
     if (activeToolId !== 'photo-effects') {
       setPhoto(null);
-      setCameraMinimized(false);
       setSelectedEffect(null);
       setPhotoAscii('');
       setShowAsciiCamera(false);
-    } else {
-      // Solo configurar la cámara para la herramienta de efectos de foto
-      setupCamera();
+      setShowEffectsGrid(false);
     }
   }, [activeToolId]);
 
   useEffect(() => {
+    // Para evitar problemas con la referencia al desmontar
+    const video = videoRef.current;
+    
     // Limpiar recursos de la cámara al desmontar
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
+      if (video && video.srcObject) {
+        const stream = video.srcObject as MediaStream;
         const tracks = stream.getTracks();
         tracks.forEach(track => track.stop());
       }
@@ -205,18 +373,19 @@ export default function CreatePage() {
         // Convertir el canvas a una URL de datos (formato base64)
         const dataUrl = canvas.toDataURL('image/png');
         setPhoto(dataUrl);
-        setCameraMinimized(true);
         setPhotoAscii(''); // Reiniciar el ASCII cuando se toma una nueva foto
         setShowAsciiCamera(false); // Volver al modo normal
+        setShowEffectsGrid(true); // Mostrar grid de efectos después de tomar la foto
       }
     }
   };
 
   const retakePhoto = () => {
     setPhoto(null);
-    setCameraMinimized(false);
     setSelectedEffect(null);
     setPhotoAscii('');
+    setShowEffectsGrid(false);
+    setupCamera(); // Asegurarse de que la cámara esté funcionando
   };
 
   const openEffectDetails = (effect: Effect) => {
@@ -233,6 +402,11 @@ export default function CreatePage() {
 
   const switchTool = (toolId: string) => {
     setActiveToolId(toolId);
+    
+    // Si se selecciona la herramienta de efectos de foto, configurar la cámara
+    if (toolId === 'photo-effects' && !photo) {
+      setupCamera();
+    }
   };
 
   // Función para descargar la imagen con el efecto seleccionado
@@ -251,31 +425,50 @@ export default function CreatePage() {
       return;
     }
 
-    // Para efectos normales, usar canvas
-    const tempCanvas = document.createElement('canvas');
-    const img = new Image();
-    
-    img.onload = () => {
-      tempCanvas.width = img.width;
-      tempCanvas.height = img.height;
-      const ctx = tempCanvas.getContext('2d');
+    // Para efectos de CSS, usar canvas
+    if (selectedEffect.type === 'css') {
+      const tempCanvas = document.createElement('canvas');
+      const img = new Image();
       
-      if (ctx) {
-        // Dibujar la imagen en el canvas
-        ctx.filter = selectedEffect.filter;
-        ctx.drawImage(img, 0, 0);
+      img.onload = () => {
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const ctx = tempCanvas.getContext('2d');
         
-        // Crear un enlace para descargar
-        const a = document.createElement('a');
-        a.href = tempCanvas.toDataURL('image/png');
-        a.download = `kroko-foto-${selectedEffect.name.toLowerCase()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        if (ctx) {
+          // Dibujar la imagen en el canvas
+          ctx.filter = selectedEffect.filter;
+          ctx.drawImage(img, 0, 0);
+          
+          // Crear un enlace para descargar
+          const a = document.createElement('a');
+          a.href = tempCanvas.toDataURL('image/png');
+          a.download = `kroko-foto-${selectedEffect.name.toLowerCase()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+      };
+      
+      img.src = photo;
+    } else {
+      // Para efectos WebGL, capturar el canvas
+      const a = document.createElement('a');
+      a.download = `kroko-foto-${selectedEffect.name.toLowerCase()}.png`;
+      
+      // Encontrar el canvas de WebGL
+      const webglCanvas = document.querySelector('.webgl-effect canvas') as HTMLCanvasElement;
+      if (webglCanvas) {
+        webglCanvas.toBlob((blob: Blob | null) => {
+          if (blob) {
+            a.href = URL.createObjectURL(blob);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+        });
       }
-    };
-    
-    img.src = photo;
+    }
   };
 
   // Renderizar contenido de la herramienta activa
@@ -283,6 +476,8 @@ export default function CreatePage() {
     switch (activeToolId) {
       case 'photo-effects':
         return renderPhotoEffects();
+      case 'ascii-art':
+        return renderAsciiArt();
       default:
         return renderPlaceholder();
     }
@@ -295,9 +490,55 @@ export default function CreatePage() {
         {error ? (
           <div className="text-red-500 mb-4">{error}</div>
         ) : (
-          <>
-            {photo && !selectedEffect && (
-              <div className="w-full max-w-4xl mb-8">
+          <div className="w-full">
+            {!photo && (
+              <div className="flex flex-col items-center">
+                <div className="w-full max-w-2xl">
+                  <Typography variant="h2" className="text-accent-strong mb-6">Captura una foto para empezar</Typography>
+                  
+                  {/* Cámara web principal */}
+                  <div className="relative">
+                    <div className="mb-2 flex justify-end">
+                      <button
+                        onClick={toggleAsciiCamera}
+                        className="px-3 py-1 bg-accent-strong text-white rounded-lg text-sm hover:opacity-90 transition-opacity mr-2"
+                      >
+                        {showAsciiCamera ? 'Modo Normal' : 'Modo ASCII'}
+                      </button>
+                    </div>
+                    
+                    {showAsciiCamera ? (
+                      <div className="aspect-video bg-black rounded-lg border-2 border-accent-strong overflow-hidden">
+                        <WebcamAsciiEffect 
+                          effect="ascii"
+                          width={160}
+                          fps={12}
+                          className="w-full h-full"
+                        />
+                      </div>
+                    ) : (
+                      <video 
+                        ref={videoRef} 
+                        autoPlay 
+                        playsInline 
+                        className="rounded-lg border-2 border-accent-strong max-w-full aspect-video"
+                      />
+                    )}
+                    
+                    <button 
+                      onClick={takePhoto}
+                      className="mt-4 px-6 py-2 bg-accent-strong text-white rounded-lg hover:opacity-90 transition-opacity"
+                    >
+                      Tomar Foto
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Nuevo layout después de tomar la foto: cámara a la izquierda, efectos a la derecha */}
+            {photo && showEffectsGrid && !selectedEffect && (
+              <div className="w-full max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-4">
                   <Typography variant="h2" className="text-accent-strong">Efectos</Typography>
                   <button 
@@ -308,111 +549,82 @@ export default function CreatePage() {
                   </button>
                 </div>
                 
-                {/* Grid compacto de todas las fotos juntas */}
-                <div className="relative border-4 border-accent-strong rounded-lg overflow-hidden">
-                  <div className="grid grid-cols-5 gap-px bg-accent-strong">
-                    {effects.map((effect, index) => (
-                      <div 
-                        key={index} 
-                        className="aspect-square overflow-hidden cursor-pointer relative group"
-                        onClick={() => openEffectDetails(effect)}
-                      >
-                        {effect.name === "ASCII" ? (
-                          <div className="w-full h-full bg-black flex items-center justify-center text-[8px] text-accent-strong font-mono">
-                            @#%*+;:,.
-                          </div>
-                        ) : (
-                          <img 
-                            src={photo} 
-                            alt={`Efecto ${effect.name}`} 
-                            className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                            style={{ filter: effect.filter }}
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
-                          <span className="text-white opacity-0 group-hover:opacity-100 font-bold text-shadow-md transition-opacity">
-                            {effect.name}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-accent-bg bg-opacity-70 p-2 text-center">
-                    <Typography variant="p" className="text-sm">Haz clic en un efecto para verlo en detalle</Typography>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Cámara web (ahora debajo de la tooltip o grid) */}
-            <div className={`relative ${cameraMinimized ? 'fixed top-4 right-4 z-10 w-1/4 md:w-1/5 lg:w-1/6' : 'w-full max-w-2xl'}`}>
-              {!cameraMinimized && (
-                <div className="mb-2 flex justify-end">
-                  <button
-                    onClick={toggleAsciiCamera}
-                    className="px-3 py-1 bg-accent-strong text-white rounded-lg text-sm hover:opacity-90 transition-opacity mr-2"
-                  >
-                    {showAsciiCamera ? 'Modo Normal' : 'Modo ASCII'}
-                  </button>
-                </div>
-              )}
-              
-              {showAsciiCamera && !cameraMinimized ? (
-                <div className="aspect-video bg-black rounded-lg border-2 border-accent-strong overflow-hidden">
-                  <WebcamAsciiEffect 
-                    effect="ascii"
-                    width={160}
-                    fps={12}
-                    className="w-full h-full"
-                  />
-                </div>
-              ) : (
-                <video 
-                  ref={videoRef} 
-                  autoPlay 
-                  playsInline 
-                  className={`rounded-lg border-2 border-accent-strong max-w-full ${cameraMinimized ? 'shadow-lg' : ''}`}
-                  style={{ maxHeight: cameraMinimized ? '20vh' : '60vh' }}
-                />
-              )}
-              
-              {!cameraMinimized && (
-                <button 
-                  onClick={takePhoto}
-                  className="mt-4 px-6 py-2 bg-accent-strong text-white rounded-lg hover:opacity-90 transition-opacity"
-                >
-                  Tomar Foto
-                </button>
-              )}
-            </div>
-
-            {/* Efectos ASCII en vivo */}
-            {!photo && !cameraMinimized && !showAsciiCamera && (
-              <div className="mt-8 w-full max-w-4xl">
-                <Typography variant="h2" className="text-accent-strong mb-4">Efectos en Vivo</Typography>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  {effects.map((effect, index) => (
-                    <div key={index} className="overflow-hidden rounded-lg border-2 border-accent-strong">
-                      <div className="p-2 bg-accent-bg">
-                        <Typography variant="p" className="text-center text-sm">{effect.name}</Typography>
-                      </div>
-                      <div className="aspect-square">
-                        <WebcamAsciiEffect 
-                          effect={effect.asciiEffect} 
-                          width={80}
-                          fps={8}
-                          className="w-full h-full"
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Cámara minimizada a la izquierda */}
+                  <div className="md:w-1/3">
+                    <div className="sticky top-4">
+                      <Typography variant="h3" className="mb-2">Foto original</Typography>
+                      <div className="rounded-lg border-2 border-accent-strong overflow-hidden">
+                        {/* En un proyecto real, deberíamos usar next/image, pero para simplificar usaremos img */}
+                        <img 
+                          src={photo} 
+                          alt="Foto original" 
+                          className="w-full h-auto"
                         />
                       </div>
                     </div>
-                  ))}
+                  </div>
+                  
+                  {/* Grid de efectos a la derecha */}
+                  <div className="md:w-2/3">
+                    <Typography variant="h3" className="mb-2">Selecciona un efecto</Typography>
+                    
+                    {/* CSS Filters */}
+                    <div className="mb-6">
+                      <Typography variant="h4" className="text-accent-strong mb-2">Filtros CSS</Typography>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {cssEffects.map((effect, index) => (
+                          <div 
+                            key={`css-${index}`} 
+                            className="overflow-hidden cursor-pointer border-2 border-accent-bg hover:border-accent-strong rounded-lg transition-all"
+                            onClick={() => openEffectDetails(effect)}
+                          >
+                            <div className="aspect-square overflow-hidden">
+                              <img 
+                                src={photo} 
+                                alt={`Efecto ${effect.name}`} 
+                                className="w-full h-full object-cover"
+                                style={{ filter: effect.filter }}
+                              />
+                            </div>
+                            <div className="p-2 bg-accent-bg">
+                              <Typography variant="p" className="text-center text-sm">{effect.name}</Typography>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* WebGL Effects */}
+                    <div className="mb-6">
+                      <Typography variant="h4" className="text-accent-strong mb-2">Efectos Avanzados (WebGL)</Typography>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                        {webglEffects.map((effect, index) => (
+                          <div 
+                            key={`webgl-${index}`} 
+                            className="overflow-hidden cursor-pointer border-2 border-accent-bg hover:border-accent-strong rounded-lg transition-all"
+                            onClick={() => openEffectDetails(effect)}
+                          >
+                            <div className="aspect-square overflow-hidden relative bg-gray-900">
+                              <div className="absolute inset-0 flex items-center justify-center text-accent-strong opacity-30">
+                                <span className="text-3xl">{effect.name === "Kaleidoscopio" ? "🔮" : "✨"}</span>
+                              </div>
+                            </div>
+                            <div className="p-2 bg-accent-bg">
+                              <Typography variant="p" className="text-center text-sm">{effect.name}</Typography>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Detalle del efecto seleccionado */}
+            {/* Vista detallada de un efecto */}
             {photo && selectedEffect && (
-              <div className="mt-8 w-full max-w-4xl">
+              <div className="w-full max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-4">
                   <Typography variant="h2" className="text-accent-strong">{selectedEffect.name}</Typography>
                   <div className="flex gap-2">
@@ -432,10 +644,54 @@ export default function CreatePage() {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Imagen con efecto aplicado o efecto ASCII */}
+                  {/* Original vs Efecto */}
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="overflow-hidden rounded-lg border-2 border-accent-strong">
+                      <div className="p-2 bg-accent-bg">
+                        <Typography variant="p" className="text-center">Original</Typography>
+                      </div>
+                      <img 
+                        src={photo} 
+                        alt="Foto original" 
+                        className="w-full h-auto"
+                      />
+                    </div>
+                  </div>
+                  
                   <div className="overflow-hidden rounded-lg border-2 border-accent-strong">
-                    {selectedEffect.name === "ASCII" ? (
-                      <div className="bg-black p-2 min-h-[200px] flex items-center justify-center">
+                    <div className="p-2 bg-accent-bg">
+                      <Typography variant="p" className="text-center">Efecto {selectedEffect.name}</Typography>
+                    </div>
+                    
+                    {/* Renderizado según el tipo de efecto */}
+                    {selectedEffect.type === 'css' && (
+                      <img 
+                        src={photo} 
+                        alt={`Efecto ${selectedEffect.name}`} 
+                        className="w-full h-auto"
+                        style={{ filter: selectedEffect.filter }}
+                      />
+                    )}
+                    
+                    {selectedEffect.type === 'webgl' && selectedEffect.name === 'Kaleidoscopio' && (
+                      <KaleidoscopeEffect 
+                        photo={photo} 
+                        config={selectedEffect.config}
+                      />
+                    )}
+                    
+                    {selectedEffect.type === 'webgl' && selectedEffect.name !== 'Kaleidoscopio' && (
+                      <div className="webgl-effect">
+                        <WebGLEffect 
+                          photo={photo} 
+                          effect={selectedEffect.name.toLowerCase()} 
+                          config={selectedEffect.config}
+                        />
+                      </div>
+                    )}
+                    
+                    {selectedEffect.type === 'ascii' && (
+                      <div className="bg-black p-4 min-h-[200px] flex items-center justify-center">
                         {isGeneratingAscii ? (
                           <div className="text-accent-strong">Generando ASCII...</div>
                         ) : (
@@ -446,25 +702,18 @@ export default function CreatePage() {
                           </pre>
                         )}
                       </div>
-                    ) : (
-                      <img 
-                        src={photo} 
-                        alt={`Efecto ${selectedEffect.name}`} 
-                        className="w-full h-auto"
-                        style={{ filter: selectedEffect.filter }}
-                      />
                     )}
                   </div>
                   
-                  {/* Información y configuraciones */}
-                  <div className="p-4 bg-accent-bg rounded-lg border-2 border-accent-strong">
+                  {/* Descripción y controles del efecto */}
+                  <div className="md:col-span-2 p-4 bg-accent-bg rounded-lg border-2 border-accent-strong">
                     <Typography variant="h3" className="mb-2">Descripción</Typography>
                     <Typography variant="p" className="mb-4">{selectedEffect.description}</Typography>
                     
                     {selectedEffect.config && (
                       <>
                         <Typography variant="h3" className="mb-2 mt-4">Configuración</Typography>
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {Object.entries(selectedEffect.config).map(([key, value]) => (
                             <div key={key}>
                               <div className="flex justify-between">
@@ -485,14 +734,16 @@ export default function CreatePage() {
                       </>
                     )}
 
-                    <div className="mt-6">
-                      <Typography variant="h3" className="mb-2">Código CSS</Typography>
-                      <div className="bg-gray-800 text-green-400 p-3 rounded font-mono text-sm">
-                        {selectedEffect.name === "ASCII" 
-                          ? "// Arte ASCII generado mediante algoritmo de mapeo de brillo\n// a caracteres: @#S%?*+;:,. " 
-                          : `filter: ${selectedEffect.filter};`}
+                    {selectedEffect.type !== 'ascii' && (
+                      <div className="mt-6">
+                        <Typography variant="h3" className="mb-2">Tecnología</Typography>
+                        <div className="bg-gray-800 text-green-400 p-3 rounded font-mono text-sm overflow-auto">
+                          {selectedEffect.type === 'css' 
+                            ? `/* CSS Filter */\nfilter: ${selectedEffect.filter};` 
+                            : `/* WebGL Shader */\n// Utilizando Three.js y React Three Fiber\n// con efectos avanzados de post-procesamiento`}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -500,9 +751,26 @@ export default function CreatePage() {
 
             {/* Canvas oculto para procesar la imagen */}
             <canvas ref={canvasRef} className="hidden" />
-          </>
+          </div>
         )}
       </>
+    );
+  };
+
+  // Renderizar herramienta de generación de arte ASCII con texto
+  const renderAsciiArt = () => {
+    return (
+      <div className="w-full">
+        <div className="mb-8">
+          <Typography variant="h2" className="text-accent-strong mb-2">Generador de Arte ASCII</Typography>
+          <Typography variant="p" className="mb-6 max-w-3xl">
+            Convierte texto en arte ASCII con diversos estilos. Prueba diferentes fuentes y efectos para crear firmas, 
+            banners o diseños únicos para tus proyectos.
+          </Typography>
+          
+          <AsciiTextGenerator initialText="KROKO" />
+        </div>
+      </div>
     );
   };
 
@@ -542,9 +810,9 @@ export default function CreatePage() {
               }`}
             >
               {tool.name}
-              {activeToolId !== tool.id && tool.id !== 'photo-effects' && (
+              {activeToolId !== tool.id && (tool.id === 'ascii-art' || tool.id !== 'photo-effects') && (
                 <span className="absolute top-2 right-1 text-xs bg-accent-strong text-white rounded-full px-1.5 py-0.5 text-[10px]">
-                  Nuevo
+                  {tool.id === 'ascii-art' ? 'Nuevo' : 'Pronto'}
                 </span>
               )}
             </button>

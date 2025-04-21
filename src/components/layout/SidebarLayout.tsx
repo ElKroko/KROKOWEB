@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import TooltipBar from '@/components/ui/TooltipBar';
 import { useDualMode } from '@/providers/DualModeProvider';
+import TopMusicPlayer from '@/components/layout/TopMusicPlayer';
+import { useMusic } from '@/providers/MusicProvider';
 
 interface SidebarLayoutProps {
   children: React.ReactNode;
@@ -20,6 +22,7 @@ const getPageNameFromPath = (path: string): string => {
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const { mode } = useDualMode();
   const pathname = usePathname();
+  const { tracks, currentTrackIndex } = useMusic();
   
   // Define menu items that will appear in the sidebar
   const menuItems = [
@@ -78,13 +81,19 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         currentPath={pathname}
       />
       
-      {/* Main content area with left margin to accommodate the sidebar */}
-      <main className="flex-1 ml-[250px] min-h-screen">
+      {/* Reproductor de música en la parte superior */}
+      <TopMusicPlayer 
+        tracks={tracks} 
+        initialTrackIndex={currentTrackIndex} 
+      />
+      
+      {/* Main content area with left margin to accommodate the sidebar and top margin for the player */}
+      <main className="flex-1 ml-48 pt-12 min-h-screen">
         {children}
       </main>
       
-      {/* Tooltip bar en la esquina superior derecha */}
-      <div className="fixed top-6 right-6 z-50">
+      {/* Tooltip bar en la esquina superior derecha - z-index más alto que el reproductor */}
+      <div className="fixed top-16 right-6 z-[60]">
         <TooltipBar />
       </div>
     </div>

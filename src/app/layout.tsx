@@ -4,6 +4,7 @@ import "./base-styles.css"
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { AccentColorProvider } from '@/providers/AccentColorProvider';
 import { DualModeProvider } from '@/providers/DualModeProvider';
+import { MusicProvider } from '@/providers/MusicProvider';
 import SidebarLayout from '@/components/layout/SidebarLayout';
 
 // Main font for body text
@@ -37,9 +38,11 @@ export default function RootLayout({
         <ThemeProvider>
           <DualModeProvider>
             <AccentColorProvider>
-              <SidebarLayout>
-                {children}
-              </SidebarLayout>
+              <MusicProvider>
+                <SidebarLayout>
+                  {children}
+                </SidebarLayout>
+              </MusicProvider>
             </AccentColorProvider>
           </DualModeProvider>
         </ThemeProvider>
