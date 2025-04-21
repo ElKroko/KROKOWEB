@@ -1,8 +1,25 @@
 import figlet from 'figlet';
 import { promisify } from 'util';
+import { loadFigletFonts, getAllFontsFromDirectory } from './figlet-loader';
 
 // Convertir figlet.text a una versión basada en promesas
 const figletPromise = promisify(figlet.text);
+
+// Cargar las fuentes cuando se importe este módulo
+let fontsLoaded = false;
+let availableFonts: string[] = [];
+
+/**
+ * Asegura que las fuentes estén cargadas antes de usarlas
+ */
+export async function ensureFontsLoaded(): Promise<string[]> {
+  if (!fontsLoaded) {
+    await loadFigletFonts();
+    availableFonts = await getAllFontsFromDirectory();
+    fontsLoaded = true;
+  }
+  return availableFonts;
+}
 
 // Tipos para las opciones de figlet
 export type FigletOptions = {
@@ -30,6 +47,9 @@ export type AsciiTextStyle = {
  */
 export async function generateFigletText(text: string, options: FigletOptions = {}): Promise<string> {
   try {
+    // Asegurar que las fuentes estén cargadas
+    await ensureFontsLoaded();
+    
     // Valor predeterminado para texto vacío
     if (!text.trim()) {
       text = 'KROKO';
@@ -204,8 +224,9 @@ export async function generateWaveText(text: string): Promise<string> {
   }
 }
 
-// Lista de fuentes disponibles en figlet (un subconjunto para no saturar la interfaz)
-export const figletFonts = [
+// Lista de fuentes disponibles en figlet
+// Esta lista se actualizará dinámicamente con todas las fuentes disponibles
+export let figletFonts = [
   'Standard',
   '3-D',
   '3x5',
@@ -224,47 +245,15 @@ export const figletFonts = [
   'Digital',
   'Doh',
   'Doom',
-  'Epic',
-  'Fender',
-  'Fire Font-s',
-  'Ghost',
-  'Graffiti',
-  'Impossible',
-  'Isometric1',
-  'Isometric2',
-  'Isometric3',
-  'Isometric4',
-  'Lean',
-  'Letters',
-  'Linux',
-  'Merlin1',
-  'Merlin2',
-  'Mini',
-  'Mnemonic',
-  'Morse',
-  'Moscow',
-  'Ogre',
-  'Poison',
-  'Rectangles',
-  'Reverse',
-  'Roman',
-  'Rounded',
-  'Rozzo',
-  'Runic',
-  'Script',
-  'Shadow',
-  'Slant',
-  'Small',
-  'Soft',
-  'Standard',
-  'Star Wars',
-  'Sub-Zero',
-  'Swampland',
-  'Sweet',
-  'Train',
-  'Univers',
-  'Varsity'
+  // Más fuentes se cargarán dinámicamente
 ];
+
+// Función para actualizar la lista de fuentes
+export async function updateFontList(): Promise<string[]> {
+  const fonts = await ensureFontsLoaded();
+  figletFonts = fonts;
+  return fonts;
+}
 
 // Colección de estilos predefinidos
 export const asciiTextStyles: AsciiTextStyle[] = [
@@ -387,6 +376,9 @@ export const asciiTextStyles: AsciiTextStyle[] = [
  */
 export async function generateAsciiArt(text: string, style: AsciiTextStyle): Promise<string> {
   try {
+    // Asegurar que las fuentes estén cargadas
+    await ensureFontsLoaded();
+    
     if (!text || !text.trim()) {
       text = 'KROKO';
     }
@@ -403,3 +395,6 @@ export async function generateAsciiArt(text: string, style: AsciiTextStyle): Pro
     return `Error generando arte ASCII: ${error instanceof Error ? error.message : String(error)}`;
   }
 }
+
+// Inicializar la lista de fuentes cuando se importe este módulo
+updateFontList().catch(err => console.error('Error updating font list:', err));
