@@ -18,20 +18,14 @@ export default function Section({
   subtitle,
   className = '',
   id,
-  fullWidth = false,
-  background = 'white'
+  fullWidth = false
 }: SectionProps) {
-  
-  const backgroundClasses = {
-    white: 'bg-white dark:bg-gray-900',
-    light: 'bg-gray-50 dark:bg-gray-800',
-    dark: 'bg-gray-800 dark:bg-gray-950 text-white'
-  };
+
   
   return (
     <section 
       id={id} 
-      className={`${backgroundClasses[background]} ${className}`}
+      className={`${className}`}
     >
       <div className={`${fullWidth ? 'w-full' : 'w-full'}`}>
         {(title || subtitle) && (

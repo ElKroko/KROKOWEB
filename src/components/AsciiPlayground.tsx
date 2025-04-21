@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect, ChangeEvent, useCallback } from 'react';
+import { useDualMode } from '@/providers/DualModeProvider';
+import { useAccentColor } from '@/providers/AccentColorProvider';
 
 // Helper function to calculate average brightness of a block
 function getBlockBrightness(imageData: ImageData, x: number, y: number, cellSize: number): number {
@@ -27,7 +29,42 @@ function getBlockBrightness(imageData: ImageData, x: number, y: number, cellSize
   return count > 0 ? totalBrightness / count / 255 : 0; // Normalize to 0-1
 }
 
+// Helper function to scale an image to a maximum width and height
+function scaleImage(img: HTMLImageElement, maxWidth: number, maxHeight: number): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  let width = img.width;
+  let height = img.height;
+  
+  // Calculate the new dimensions while maintaining aspect ratio
+  if (width > maxWidth) {
+    height = Math.floor(height * (maxWidth / width));
+    width = maxWidth;
+  }
+  
+  if (height > maxHeight) {
+    width = Math.floor(width * (maxHeight / height));
+    height = maxHeight;
+  }
+  
+  // Ensure minimum dimensions
+  width = Math.max(width, 100);
+  height = Math.max(height, 100);
+  
+  canvas.width = width;
+  canvas.height = height;
+  
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.drawImage(img, 0, 0, width, height);
+  }
+  
+  return canvas;
+}
+
 export default function AsciiPlayground() {
+  const { mode } = useDualMode();
+  const { accentColor } = useAccentColor();
+
   // 1. Estado de la imagen / texto de entrada
   const [inputImage, setInputImage] = useState<string | null>(null); // Store URL
   const [inputText, setInputText] = useState<string>('');
@@ -45,6 +82,19 @@ export default function AsciiPlayground() {
   const [invert, setInvert] = useState<boolean>(false);
   const [threshold, setThreshold] = useState<number>(0); // 0 = off, >0 = binary threshold (0-1)
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [resolutionFactor, setResolutionFactor] = useState<number>(100); // Nuevo: 1-200% de la resolución base
+
+  // Preset character sets
+  const charSets = [
+    { name: 'Standard', value: '@#S%?*+;:,. ' },
+    { name: 'Blocks', value: '█▓▒░ ' },
+    { name: 'Simple', value: '@%#*+=-:. ' },
+    { name: 'Detailed', value: '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,"^`\'. ' },
+    { name: 'Binary', value: '10 ' },
+    { name: 'Letters', value: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ' },
+    { name: 'Minimal', value: '@. ' },
+    { name: 'Symbols', value: '#$_-+=*/|\\:;,.^ ' }
+  ];
 
   // 3. Refs para canvas y estado ASCII
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -106,13 +156,19 @@ export default function AsciiPlayground() {
       img.onload = () => {
         imageRef.current = img; // Store image ref for dimensions
 
-        // Calculate dimensions for ASCII output based on cell size
-        const asciiWidth = Math.floor(img.width / cellSize);
-        const asciiHeight = Math.floor(img.height / cellSize);
+        // Calcular dimensiones máximas basadas en el factor de resolución
+        // Aumentamos la resolución base para mostrar más caracteres
+        const maxWidth = Math.floor(200 * (resolutionFactor / 100));
+        const maxHeight = Math.floor(150 * (resolutionFactor / 100));
 
-        // Resize canvas to match image dimensions (for drawing)
-        canvas.width = img.width;
-        canvas.height = img.height;
+        // Escalar la imagen a un tamaño manejable
+        const scaledImageCanvas = scaleImage(img, maxWidth, maxHeight);
+        const scaledWidth = scaledImageCanvas.width;
+        const scaledHeight = scaledImageCanvas.height;
+
+        // Usar la imagen escalada para el proceso ASCII
+        canvas.width = scaledWidth;
+        canvas.height = scaledHeight;
 
         // Apply filters
         ctx.filter = `brightness(${brightness}) contrast(${contrast}) ${invert ? 'invert(1)' : ''}`;
@@ -121,7 +177,12 @@ export default function AsciiPlayground() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         try {
-          ctx.drawImage(img, 0, 0);
+          // Dibujar la imagen escalada en lugar de la original
+          ctx.drawImage(scaledImageCanvas, 0, 0);
+
+          // Calcular dimensiones ASCII basadas en la imagen escalada
+          const asciiWidth = Math.floor(scaledWidth / cellSize);
+          const asciiHeight = Math.floor(scaledHeight / cellSize);
 
           // Get image data *after* drawing and applying filters
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -173,7 +234,7 @@ export default function AsciiPlayground() {
         }
       };
     }
-  }, [inputImage, inputText, cellSize, chars, brightness, contrast, invert, threshold]); // Dependencies
+  }, [inputImage, inputText, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]); // Añadir resolutionFactor a las dependencias
 
   // 6. Funciones de descarga
   const downloadTxt = useCallback(() => {
@@ -263,19 +324,26 @@ export default function AsciiPlayground() {
         img.crossOrigin = 'anonymous';
 
         img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
+          // Calcular dimensiones máximas basadas en el factor de resolución
+          const maxWidth = Math.floor(120 * (resolutionFactor / 100));
+          const maxHeight = Math.floor(80 * (resolutionFactor / 100));
+
+          // Escalar la imagen a un tamaño manejable
+          const scaledImageCanvas = scaleImage(img, maxWidth, maxHeight);
+          
+          canvas.width = scaledImageCanvas.width;
+          canvas.height = scaledImageCanvas.height;
 
           // Aplicar filtros específicos para este frame
           ctx.filter = `brightness(${frameBrightness}) contrast(${frameContrast}) ${invert ? 'invert(1)' : ''}`;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
           try {
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(scaledImageCanvas, 0, 0);
 
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const asciiWidth = Math.floor(img.width / cellSize);
-            const asciiHeight = Math.floor(img.height / cellSize);
+            const asciiWidth = Math.floor(scaledImageCanvas.width / cellSize);
+            const asciiHeight = Math.floor(scaledImageCanvas.height / cellSize);
 
             let asciiArt = '';
             const effectiveChars = invert ? chars.split('').reverse().join('') : chars;
@@ -337,7 +405,7 @@ export default function AsciiPlayground() {
 
     // Limpiar el intervalo cuando se cierre la vista previa
     return () => clearInterval(previewInterval);
-  }, [inputImage, cellSize, chars, brightness, contrast, invert, threshold]);
+  }, [inputImage, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]); // Añadir resolutionFactor a las dependencias
 
   // 8. Descargar como GIF
   const downloadAsGif = useCallback(() => {
@@ -373,21 +441,30 @@ export default function AsciiPlayground() {
     // gif.render();
   }, [animationFrames]);
 
+  // Definir estilos dinámicos según el modo
+  const buttonStyle = mode === 'xklokon' 
+    ? 'bg-card-bg hover:bg-accent-color/20 text-accent-color border border-accent-color/40' 
+    : 'bg-accent-color/10 hover:bg-accent-color/30 text-accent-color border border-accent-color/20';
+  
+  const primaryButtonStyle = mode === 'xklokon'
+    ? 'bg-accent-color/30 hover:bg-accent-color/50 text-accent-color border-none'
+    : 'bg-accent-color/80 hover:bg-accent-color text-bg border-none';
+
   return (
     <div className="ascii-playground grid grid-cols-3 gap-4 p-4">
       <aside className="controls col-span-1 space-y-4">
         {/* Input Section */}
-        <div>
+        <div className="text-center mb-2">
           <label
             htmlFor="imageUpload"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-accent-color mb-2"
           >
-            Upload Image
+            Selecciona una imagen
           </label>
 
           {/* Vista previa de la imagen cargada */}
           {inputImage && (
-            <div className="mb-2 relative border-2 border-violet-200 rounded-lg overflow-hidden">
+            <div className="mb-3 relative rounded-lg overflow-hidden max-w-xs mx-auto">
               <img 
                 src={inputImage} 
                 alt="Preview" 
@@ -396,228 +473,273 @@ export default function AsciiPlayground() {
             </div>
           )}
 
-          <input
-            id="imageUpload"
-            type="file"
-            accept="image/*"
-            onChange={handleUpload}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-          />
-        </div>
-        <div className="text-center my-2 text-gray-500">OR</div>
-        <div>
-          <label
-            htmlFor="textInput"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Enter Text
-          </label>
-          <textarea
-            id="textInput"
-            rows={4}
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Paste or type text here..."
-            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-          />
+          <div className="flex justify-center">
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleUpload}
+              className="w-auto text-sm file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accent-color/20 file:text-accent-color hover:file:bg-accent-color/30"
+            />
+          </div>
         </div>
 
-        <hr className="my-4" />
+        <hr className="border-accent-color/20 my-2" />
 
-        {/* Parameter Sliders */}
-        <div>
-          <label
-            htmlFor="cellSize"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Cell Size: {cellSize}px
-          </label>
-          <input
-            id="cellSize"
-            type="range"
-            min="2"
-            max="32"
-            step="1"
-            value={cellSize}
-            onChange={(e) => setCellSize(parseInt(e.target.value, 10))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
+        {/* Controles organizados en un diseño compacto */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Primera columna */}
+          <div className="space-y-3">
+            <div>
+              <label
+                htmlFor="cellSize"
+                className="block text-sm font-medium text-accent-color"
+              >
+                Cell Size: {cellSize}px
+              </label>
+              <input
+                id="cellSize"
+                type="range"
+                min="2"
+                max="16"
+                step="1"
+                value={cellSize}
+                onChange={(e) => setCellSize(parseInt(e.target.value, 10))}
+                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                style={{ accentColor: accentColor }}
+              />
+            </div>
+            
+            <div>
+              <label
+                htmlFor="brightness"
+                className="block text-sm font-medium text-accent-color"
+              >
+                Brightness: {brightness.toFixed(1)}
+              </label>
+              <input
+                id="brightness"
+                type="range"
+                min="0"
+                max="3"
+                step="0.1"
+                value={brightness}
+                onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                style={{ accentColor: accentColor }}
+              />
+            </div>
+            
+            <div>
+              <label
+                htmlFor="threshold"
+                className="block text-sm font-medium text-accent-color"
+              >
+                Threshold: {threshold > 0 ? threshold.toFixed(2) : 'Off'}
+              </label>
+              <input
+                id="threshold"
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={threshold}
+                onChange={(e) => setThreshold(parseFloat(e.target.value))}
+                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                style={{ accentColor: accentColor }}
+              />
+            </div>
+          </div>
+          
+          {/* Segunda columna */}
+          <div className="space-y-3">
+            <div>
+              <label
+                htmlFor="resolutionFactor"
+                className="block text-sm font-medium text-accent-color"
+              >
+                Resolution: {resolutionFactor}%
+              </label>
+              <input
+                id="resolutionFactor"
+                type="range"
+                min="50"
+                max="200"
+                step="10"
+                value={resolutionFactor}
+                onChange={(e) => setResolutionFactor(parseInt(e.target.value, 10))}
+                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                style={{ accentColor: accentColor }}
+              />
+            </div>
+            
+            <div>
+              <label
+                htmlFor="contrast"
+                className="block text-sm font-medium text-accent-color"
+              >
+                Contrast: {contrast.toFixed(1)}
+              </label>
+              <input
+                id="contrast"
+                type="range"
+                min="0"
+                max="3"
+                step="0.1"
+                value={contrast}
+                onChange={(e) => setContrast(parseFloat(e.target.value))}
+                className="w-full h-2 bg-accent-color/20 rounded-lg appearance-none cursor-pointer"
+                style={{ accentColor: accentColor }}
+              />
+            </div>
+            
+            <div className="flex items-center mt-2">
+              <input
+                id="invert"
+                type="checkbox"
+                checked={invert}
+                onChange={(e) => setInvert(e.target.checked)}
+                className="h-4 w-4 focus:ring-accent-color text-accent-color border-accent-color/30 rounded"
+              />
+              <label htmlFor="invert" className="ml-2 block text-sm text-accent-color">
+                Invert Colors
+              </label>
+            </div>
+          </div>
         </div>
+        
+        {/* Character Set Selector */}
         <div>
           <label
-            htmlFor="chars"
-            className="block text-sm font-medium text-gray-700"
+            htmlFor="charSetSelect"
+            className="block text-sm font-medium text-accent-color mb-1"
           >
             Character Set
           </label>
-          <input
-            id="chars"
-            type="text"
-            value={chars}
-            onChange={(e) => setChars(e.target.value)}
-            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-1"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Darkest → Lightest. Common: `@#S%?*+;:,. ` or `█▓▒░ `
-          </p>
-        </div>
-        <div>
-          <label
-            htmlFor="brightness"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Brightness: {brightness.toFixed(1)}
-          </label>
-          <input
-            id="brightness"
-            type="range"
-            min="0"
-            max="3"
-            step="0.1"
-            value={brightness}
-            onChange={(e) => setBrightness(parseFloat(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="contrast"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Contrast: {contrast.toFixed(1)}
-          </label>
-          <input
-            id="contrast"
-            type="range"
-            min="0"
-            max="3"
-            step="0.1"
-            value={contrast}
-            onChange={(e) => setContrast(parseFloat(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="threshold"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Binary Threshold: {threshold > 0 ? threshold.toFixed(2) : 'Off'}
-          </label>
-          <input
-            id="threshold"
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={threshold}
-            onChange={(e) => setThreshold(parseFloat(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Set > 0 to enable. Uses only first/last chars.
-          </p>
-        </div>
-        <div className="flex items-center">
-          <input
-            id="invert"
-            type="checkbox"
-            checked={invert}
-            onChange={(e) => setInvert(e.target.checked)}
-            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="invert"
-            className="ml-2 block text-sm text-gray-900"
-          >
-            Invert Colors / Chars
-          </label>
-        </div>
-
-        <hr className="my-4" />
-
-        {/* Animation Controls */}
-        {inputImage && (
-          <div className="space-y-2">
-            <button
-              onClick={generateAnimation}
-              disabled={isGeneratingAnimation || !inputImage}
-              className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+          <div className="flex gap-2">
+            <select
+              id="charSetSelect"
+              onChange={(e) => {
+                const selectedSet = charSets.find(set => set.name === e.target.value);
+                if (selectedSet) setChars(selectedSet.value);
+              }}
+              value={charSets.find(set => set.value === chars)?.name || ''}
+              className={`shadow-sm block w-full sm:text-sm border-accent-color/30 rounded-md p-1.5 ${
+                mode === 'xklokon' ? 'bg-card-bg text-text' : 'bg-white text-gray-900'
+              } focus:ring-accent-color focus:border-accent-color`}
             >
-              {isGeneratingAnimation ? 'Generando animación...' : 'Generar animación ASCII'}
-            </button>
-
-            {animationFrames.length > 0 && (
-              <>
-                <button
-                  onClick={downloadAsGif}
-                  disabled={isGeneratingAnimation}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
-                >
-                  Descargar como GIF
-                </button>
-
-                <div className="mt-2 text-xs text-gray-500 text-center">
-                  {animationFrames.length} frames generados
-                </div>
-              </>
-            )}
+              <option value="" disabled>Select a preset</option>
+              {charSets.map(set => (
+                <option key={set.name} value={set.name}>
+                  {set.name}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
+          
+          <div className="mt-2">
+            <label htmlFor="chars" className="block text-xs text-accent-color/70 mb-1">
+              Custom Characters (Darkest → Lightest)
+            </label>
+            <input
+              id="chars"
+              type="text"
+              value={chars}
+              onChange={(e) => setChars(e.target.value)}
+              className={`shadow-sm focus:ring-accent-color focus:border-accent-color block w-full sm:text-sm border-accent-color/30 rounded-md p-1 ${
+                mode === 'xklokon' ? 'bg-card-bg text-text' : 'bg-white text-gray-900'
+              }`}
+            />
+          </div>
+        </div>
 
-        <hr className="my-4" />
+        <hr className="border-accent-color/20 my-2" />
 
-        {/* Download Buttons */}
-        <div className="space-y-2">
+        {/* Botones de acción organizados */}
+        <div className="grid grid-cols-2 gap-2">
           <button
             onClick={downloadTxt}
             disabled={!ascii || isProcessing}
-            className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+            className={`inline-flex justify-center py-2 px-3 text-xs font-medium rounded-md transition-colors ${primaryButtonStyle} disabled:opacity-50`}
           >
             Download .txt
           </button>
           <button
             onClick={downloadPng}
             disabled={!ascii || isProcessing || !inputImage}
-            className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className={`inline-flex justify-center py-2 px-3 text-xs font-medium rounded-md transition-colors ${buttonStyle} disabled:opacity-50`}
           >
             Download .png
           </button>
-          {isProcessing && (
-            <p className="text-sm text-center text-gray-500">Processing...</p>
-          )}
         </div>
+        
+        {/* Animation Controls */}
+        {inputImage && (
+          <div className="space-y-2">
+            <button
+              onClick={generateAnimation}
+              disabled={isGeneratingAnimation || !inputImage}
+              className={`w-full inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md transition-colors ${primaryButtonStyle} disabled:opacity-50`}
+            >
+              {isGeneratingAnimation ? 'Generando...' : 'Generar animación ASCII'}
+            </button>
+
+            {animationFrames.length > 0 && (
+              <>
+                <div className="flex">
+                  <button
+                    onClick={downloadAsGif}
+                    disabled={isGeneratingAnimation}
+                    className={`flex-1 inline-flex justify-center py-1 px-2 text-xs font-medium rounded-md transition-colors ${buttonStyle} disabled:opacity-50`}
+                  >
+                    Descargar animación
+                  </button>
+                  <span className="text-xs px-2 py-1 flex items-center text-accent-color/70">
+                    {animationFrames.length} frames
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+        
+        {isProcessing && (
+          <p className="text-sm text-center text-accent-color/70">Procesando...</p>
+        )}
       </aside>
 
-      <main className="preview col-span-2 bg-gray-100 p-2 rounded overflow-auto relative">
+      <main className={`preview col-span-2 ${
+        mode === 'xklokon' ? 'bg-card-bg' : 'bg-accent-color/5'
+      } p-4 rounded-md overflow-auto relative border border-accent-color/20`} 
+      style={{ height: '550px', maxHeight: '550px' }}>
         {/* Canvas is used offscreen for processing, result shown in <pre> */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
 
         {/* Animation Preview */}
         {showAnimationPreview && animationFrames.length > 0 ? (
-          <div className="animation-preview">
+          <div className="animation-preview h-full">
             <div className="mb-2 flex justify-between items-center">
-              <span className="text-sm font-medium">Previsualización de animación</span>
+              <span className="text-sm font-medium text-accent-color">Vista previa de animación</span>
               <button 
                 onClick={() => setShowAnimationPreview(false)}
-                className="text-xs px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                className="text-xs px-2 py-1 bg-accent-color/10 text-accent-color rounded hover:bg-accent-color/20"
               >
-                Volver al ASCII normal
+                Volver al ASCII
               </button>
             </div>
             <pre
-              className="ascii-output text-xs leading-none font-mono whitespace-pre break-all"
-              style={{ lineHeight: '0.7em' }}
+              className="ascii-output text-sm leading-none font-mono whitespace-pre break-all text-text overflow-auto"
+              style={{ lineHeight: '0.8em', height: 'calc(100% - 30px)' }}
             >
               {animationFrames[animationPreviewIndex] || 'Generando...'}
             </pre>
           </div>
         ) : (
           <pre
-            className="ascii-output text-xs leading-none font-mono whitespace-pre break-all"
-            style={{ lineHeight: '0.7em' }}
+            className="ascii-output text-sm leading-none font-mono whitespace-pre break-all text-text overflow-auto h-full"
+            style={{ lineHeight: '0.8em' }}
           >
-            {ascii || 'Upload an image or type text to start...'}
+            {ascii || 'Sube una imagen para convertirla en arte ASCII...'}
           </pre>
         )}
       </main>
