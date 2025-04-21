@@ -61,89 +61,59 @@ export async function loadFigletFonts() {
   }
 }
 
+
 /**
- * Get a list of all font files in the public/fonts directory
+ * Get a list of all font files from the public/fonts directory by fetching the API route.
  */
 async function getFontList(): Promise<string[]> {
-  // In production, we'll use a predefined list of fonts we know exist
-  // In development, we could potentially fetch a directory listing
-  
-  // This is a simplified approach - in a real application, you might want to
-  // generate this list at build time or fetch it from an API route
-  
-  // Sample of fonts we know exist in the directory
-  return [
-    '3-D.flf',
-    '3D Diagonal.flf',
-    '3D-ASCII.flf',
-    '3x5.flf',
-    '4Max.flf',
-    '5 Line Oblique.flf',
-    'Acrobatic.flf',
-    'Alligator.flf',
-    'Alligator2.flf',
-    'Alpha.flf',
-    'Alphabet.flf',
-    'Banner.flf',
-    'Banner3-D.flf',
-    'Banner3.flf',
-    'Banner4.flf',
-    'Barbwire.flf',
-    'Basic.flf',
-    'Big.flf',
-    'Bigfig.flf',
-    'Binary.flf',
-    'Block.flf',
-    'Bubble.flf',
-    'Bulbhead.flf',
-    'Chunky.flf',
-    'Colossal.flf',
-    'Computer.flf',
-    'Digital.flf',
-    'Doh.flf',
-    'Doom.flf',
-    'Epic.flf',
-    'Ghost.flf',
-    'Graffiti.flf',
-    'Isometric1.flf',
-    'Isometric2.flf',
-    'Isometric3.flf',
-    'Isometric4.flf',
-    'Lean.flf',
-    'Mini.flf',
-    'Shadow.flf',
-    'Slant.flf',
-    'Small.flf',
-    'Standard.flf',
-    'Star Wars.flf',
-  ];
-}
-
-/**
- * Get all available font names (without the .flf extension)
- */
-export async function getAvailableFontNames(): Promise<string[]> {
-  const fontFiles = await getFontList();
-  return fontFiles.map(file => file.replace('.flf', ''));
-}
-
-// Export a function to get a complete list of all fonts in the directory
-export async function getAllFontsFromDirectory(): Promise<string[]> {
-  if (typeof window === 'undefined') {
-    // Server-side: conditionally require fs and path
-    const fs = require('fs');
-    const path = require('path');
-    // Server-side: We can use fs to read the directory
     try {
-      const fontDir = path.join(process.cwd(), 'public', 'fonts');
-      const fontFiles = fs.readdirSync(fontDir).filter(file => file.endsWith('.flf'));
-      return fontFiles.map(file => file.replace('.flf', ''));
+      // Fetch the list of fonts from our API route
+      const response = await fetch('/api/fonts'); 
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch font list: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.error) {
+          throw new Error(`API Error: ${data.error}`);
+      }
+  
+      return data.fonts || []; // Return the fonts array or an empty array if undefined
     } catch (error) {
-      console.error('Error reading font directory:', error);
-      return [];
+      console.error("Error in getFontList:", error);
+      // Fallback to an empty list or potentially a minimal default list
+      return []; 
     }
-  } else {
-    // Client-side: Return the predefined list
-    return await getAvailableFontNames();
   }
-}
+  
+  /**
+   * Get all available font names (without the .flf extension)
+   */
+  export async function getAvailableFontNames(): Promise<string[]> {
+    // This function now implicitly uses the API fetch via getFontList
+    const fontFiles = await getFontList(); 
+    return fontFiles.map(file => file.replace('.flf', ''));
+  }
+  
+  // Export a function to get a complete list of all fonts in the directory
+  export async function getAllFontsFromDirectory(): Promise<string[]> {
+    if (typeof window === 'undefined') {
+      // Server-side: conditionally require fs and path
+      const fs = require('fs');
+      const path = require('path');
+      // Server-side: We can use fs to read the directory
+      try {
+        const fontDir = path.join(process.cwd(), 'public', 'fonts');
+        const fontFiles = fs.readdirSync(fontDir).filter((file: string) => file.endsWith('.flf'));
+        return fontFiles.map((file: string) => file.replace('.flf', ''));
+      } catch (error) {
+        console.error('Error reading font directory:', error);
+        return [];
+      }
+    } else {
+      // Client-side: This will now fetch the list via the API route
+      return await getAvailableFontNames(); 
+    }
+  }
