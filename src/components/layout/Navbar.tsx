@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Typography from '@/components/ui/Typography';
 import { useAccentColor } from '@/providers/AccentColorProvider';
-import { FaMusic, FaPalette, FaCode, FaChartLine, FaBook, FaUser, FaCube } from 'react-icons/fa';
+import { FaMusic, FaPalette, FaCode, FaChartLine, FaBook, FaUser, FaCube, FaRss } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -16,8 +16,9 @@ const navItems = [
   { name: "Programación", path: "/programming", icon: <FaCode /> },
   { name: "Trading", path: "/trading", icon: <FaChartLine /> },
   { name: "EMED", path: "/emed", icon: <FaBook /> },
+  { name: "Blog", path: "/blog", icon: <FaRss /> },
   { name: "Sobre Mí", path: "/about", icon: <FaUser /> },
-  { name: "Galería Inmersiva", path: "/gallery", icon: <FaCube /> }, // Agregada con icono de cubo 3D
+  { name: "Galería Inmersiva", path: "/gallery", icon: <FaCube /> },
 ];
 
 export default function Navbar() {

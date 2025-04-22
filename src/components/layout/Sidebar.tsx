@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import AsciiHighlight from '@/components/ui/AsciiHighlight';
 import { useDualMode } from '@/providers/DualModeProvider';
 import { useAccentColor } from '@/providers/AccentColorProvider';
+import SidebarChat from '@/components/ui/SidebarChat';
 
 interface SidebarProps {
   menuItems: {
@@ -25,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
   
   return (
     <div 
-      className="fixed left-0 top-0 h-full w-48 flex flex-col z-50 px-4 py-6"
+      className="fixed left-0 top-0 h-full w-56 flex flex-col z-50 px-4 py-6"
       style={{ 
         backgroundColor: 'var(--bg, #ffffff)',
         borderRight: '1px solid var(--accent-color)' 
@@ -44,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
       
       {/* Toggle de modo debajo del logo */}
       <div 
-        className="mb-12 cursor-pointer"
+        className="mb-8 cursor-pointer"
         onClick={toggleMode}
       >
         <span 
@@ -57,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
       </div>
       
       {/* Menu items */}
-      <div className="space-y-6 flex-1">
+      <div className="space-y-6">
         {menuItems.map((item) => {
           const isActive = currentPath === item.path || 
                           (item.path !== '/' && currentPath.startsWith(item.path));
@@ -78,6 +79,11 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, currentPath }) => {
             </div>
           );
         })}
+      </div>
+      
+      {/* Chat integrado en el resto del espacio del sidebar */}
+      <div className="mt-auto flex-1 flex flex-col min-h-[200px]">
+        <SidebarChat />
       </div>
     </div>
   );

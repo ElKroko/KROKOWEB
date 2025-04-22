@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAccentColor } from '@/providers/AccentColorProvider';
 import Typography from '@/components/ui/Typography';
 import Highlight from '@/components/ui/Highlight';
@@ -51,17 +51,59 @@ export default function TradingPage() {
   const { mode } = useDualMode();
   const [activeTab, setActiveTab] = useState('projects');
 
+  // ASCII art representation of the trading page
+  const tradingAsciiArt = `
+  +----------------------------------------------------+
+  |                                                    |
+  |                      TRADING                       |
+  |                                                    |
+  |  +---------------+           +------------------+  |
+  |  | Análisis      |           |                  |  |
+  |  | Técnico       |           |     STOCK CHART  |  |
+  |  +---------------+           |        /\\        |  |
+  |  |               |           |       /  \\       |  |
+  |  | Machine       |           |      /    \\      |  |
+  |  | Learning      |           |     /      \\     |  |
+  |  |               |           |    /        \\    |  |
+  |  | Análisis de   |           |   /          \\   |  |
+  |  | Riesgo        |           |  /____________\\  |  |
+  |  |               |           |                  |  |
+  |  +---------------+           +------------------+  |
+  |                                                    |
+  +----------------------------------------------------+
+  `;
+
+  // Actualizar tooltip al montar el componente
+  useEffect(() => {
+    const tooltipBar = document.getElementById('tooltip-bar');
+    if (tooltipBar) {
+      tooltipBar.setAttribute('data-message', 'Explora mis proyectos de trading y análisis financiero');
+    }
+  }, []);
+
   return (
     <div className="p-8 min-h-screen">
-      {/* Header */}
-      <div className="mb-20">
-        <Typography variant="h1" className="text-9xl tracking-widest font-light">
-          <span style={{ color: accentColor }}>TRADE</span>
-        </Typography>
-        <Typography variant="body" className="mt-6 text-xl max-w-2xl">
-          Enfoque cuantitativo al trading y análisis financiero. Desarrollo de modelos 
-          algorítmicos y sistemas de trading basados en datos y métodos estadísticos.
-        </Typography>
+      {/* Header Row - 40/60 split */}
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mb-8">
+        {/* Left column - Title and Description (40%) */}
+        <div className="md:col-span-4 flex flex-col justify-center">
+          <Typography variant="h1" className="text-9xl tracking-widest font-light mb-6">
+            <span style={{ color: accentColor }}>TRADE</span>
+          </Typography>
+          <Typography variant="body" className="text-sm text-text-color/80">
+            Enfoque cuantitativo al trading y análisis financiero. Desarrollo de modelos 
+            algorítmicos y sistemas de trading basados en datos y métodos estadísticos.
+          </Typography>
+        </div>
+        
+        {/* Right column - ASCII Art Preview (60%) */}
+        <div className="md:col-span-6 relative">
+          <pre 
+            className="text-[0.5rem] leading-[0.6rem] font-mono whitespace-pre text-accent-color overflow-hidden"
+          >
+            {tradingAsciiArt}
+          </pre>
+        </div>
       </div>
 
       {/* Tabs */}

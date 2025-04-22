@@ -14,23 +14,23 @@ const codeProjects = [
     description: 'Visualizador de audio en tiempo real utilizando WebGL y la API de Web Audio para crear representaciones vibrantes del espectro sonoro.',
     tags: ['JavaScript', 'WebGL', 'Web Audio API'],
     codeSnippet: `
-// Fragment shader para visualización de audio
-const fragmentShader = \`
-  precision mediump float;
-  uniform float time;
-  uniform float[] audioData;
-  
-  vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-  }
-  
-  void main() {
-    // Transformación basada en datos de audio
-    // ... código adicional
-  }
-\`
+      // Fragment shader para visualización de audio
+      const fragmentShader = \`
+        precision mediump float;
+        uniform float time;
+        uniform float[] audioData;
+        
+        vec3 hsv2rgb(vec3 c) {
+          vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+          vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+          return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        }
+        
+        void main() {
+          // Transformación basada en datos de audio
+          // ... código adicional
+        }
+      \`
     `
   },
   {
@@ -39,25 +39,25 @@ const fragmentShader = \`
     description: 'Framework para la implementación y prueba de algoritmos de trading con soporte para análisis técnico y backtest con datos históricos.',
     tags: ['Python', 'Pandas', 'NumPy', 'TA-Lib'],
     codeSnippet: `
-class Strategy:
-    def __init__(self, data):
-        self.data = data
-        self.positions = []
-        
-    def calculate_indicators(self):
-        # Calcular medias móviles
-        self.data['sma_20'] = self.data['close'].rolling(window=20).mean()
-        self.data['sma_50'] = self.data['close'].rolling(window=50).mean()
-        
-        # Calcular RSI
-        delta = self.data['close'].diff()
-        gain = delta.where(delta > 0, 0)
-        loss = -delta.where(delta < 0, 0)
-        # ... continúa implementación
-    
-    def generate_signals(self):
-        # Lógica para generar señales de compra/venta
-        # ... implementación de la estrategia
+      class Strategy:
+          def __init__(self, data):
+              self.data = data
+              self.positions = []
+              
+          def calculate_indicators(self):
+              # Calcular medias móviles
+              self.data['sma_20'] = self.data['close'].rolling(window=20).mean()
+              self.data['sma_50'] = self.data['close'].rolling(window=50).mean()
+              
+              # Calcular RSI
+              delta = self.data['close'].diff()
+              gain = delta.where(delta > 0, 0)
+              loss = -delta.where(delta < 0, 0)
+              # ... continúa implementación
+          
+          def generate_signals(self):
+              # Lógica para generar señales de compra/venta
+              # ... implementación de la estrategia
     `
   },
   {
@@ -66,32 +66,32 @@ class Strategy:
     description: 'Colección de implementaciones de patrones de diseño en TypeScript con ejemplos prácticos y casos de uso.',
     tags: ['TypeScript', 'Design Patterns', 'OOP'],
     codeSnippet: `
-// Implementación del patrón Observer en TypeScript
-interface Observer {
-  update(subject: Subject): void;
-}
-
-class Subject {
-  private observers: Observer[] = [];
-
-  public attach(observer: Observer): void {
-    const isExist = this.observers.includes(observer);
-    if (isExist) return;
-    this.observers.push(observer);
-  }
-
-  public detach(observer: Observer): void {
-    const observerIndex = this.observers.indexOf(observer);
-    if (observerIndex === -1) return;
-    this.observers.splice(observerIndex, 1);
-  }
-
-  public notify(): void {
-    for (const observer of this.observers) {
-      observer.update(this);
-    }
-  }
-}
+      // Implementación del patrón Observer en TypeScript
+      interface Observer {
+        update(subject: Subject): void;
+      }
+      
+      class Subject {
+        private observers: Observer[] = [];
+      
+        public attach(observer: Observer): void {
+          const isExist = this.observers.includes(observer);
+          if (isExist) return;
+          this.observers.push(observer);
+        }
+      
+        public detach(observer: Observer): void {
+          const observerIndex = this.observers.indexOf(observer);
+          if (observerIndex === -1) return;
+          this.observers.splice(observerIndex, 1);
+        }
+      
+        public notify(): void {
+          for (const observer of this.observers) {
+            observer.update(this);
+          }
+        }
+      }
     `
   }
 ];
@@ -101,20 +101,62 @@ export default function ProgrammingPage() {
   const { accentColor } = useAccentColor();
   const [activeProject, setActiveProject] = useState<number | null>(null);
 
+  // ASCII art representation of the programming page
+  const programmingAsciiArt = `
+  +----------------------------------------------------+
+  |                                                    |
+  |                   PROGRAMMING                      |
+  |                                                    |
+  |  +---------------+           +------------------+  |
+  |  | WebGL Audio   |           |                  |  |
+  |  | Visualizer    |           |  function map()  |  |
+  |  +---------------+           |  {               |  |
+  |  |               |           |    return data   |  |
+  |  | Algo Trading  |           |      .filter()   |  |
+  |  | Framework     |           |      .map()      |  |
+  |  |               |           |      .reduce()   |  |
+  |  | TypeScript    |           |  }               |  |
+  |  | Design        |           |                  |  |
+  |  | Patterns      |           |                  |  |
+  |  +---------------+           +------------------+  |
+  |                                                    |
+  +----------------------------------------------------+
+  `;
+
+  // Actualizar tooltip al montar el componente
+  React.useEffect(() => {
+    const tooltipBar = document.getElementById('tooltip-bar');
+    if (tooltipBar) {
+      tooltipBar.setAttribute('data-message', 'Explora mis proyectos de desarrollo y programación');
+    }
+  }, []);
+
   return (
     <div className="p-8 min-h-screen">
-      {/* Header */}
-      <div className="mb-10">
-        <Typography variant="h1" className="text-9xl tracking-widest font-light">
-          <span style={{ color: accentColor }}>CODE</span>
-        </Typography>
-        <Typography variant="body" className="mt-6 text-xl max-w-2xl">
-          Desarrollo de software centrado en la experimentación, visualización de datos y las tecnologías web.
-          Proyectos que combinan creatividad técnica con funcionalidad práctica.
-        </Typography>
+      {/* Header Row - 40/60 split */}
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mb-8">
+        {/* Left column - Title and Description (40%) */}
+        <div className="md:col-span-4 flex flex-col justify-center">
+          <Typography variant="h1" className="text-9xl tracking-widest font-light mb-6">
+            <span style={{ color: accentColor }}>CODE</span>
+          </Typography>
+          <Typography variant="body" className="text-sm text-text-color/80">
+            Desarrollo de software centrado en la experimentación, visualización de datos y las tecnologías web.
+            Proyectos que combinan creatividad técnica con funcionalidad práctica.
+          </Typography>
+        </div>
+        
+        {/* Right column - ASCII Art Preview (60%) */}
+        <div className="md:col-span-6 relative">
+          <pre 
+            className="text-[0.5rem] leading-[0.6rem] font-mono whitespace-pre text-accent-color overflow-hidden"
+          >
+            {programmingAsciiArt}
+          </pre>
+        </div>
       </div>
 
-      {/* Proyectos de código */}
+      {/* Main Content */}
       <div className="space-y-32">
         {codeProjects.map((project) => (
           <div 

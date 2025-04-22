@@ -83,6 +83,7 @@ export default function AsciiPlayground() {
   const [threshold, setThreshold] = useState<number>(0); // 0 = off, >0 = binary threshold (0-1)
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [resolutionFactor, setResolutionFactor] = useState<number>(200); // Aumentado a 150% por defecto para mostrar más caracteres
+  const [addSpacing, setAddSpacing] = useState<boolean>(false); // Estado para controlar el espaciado entre caracteres
 
   // Preset character sets
   const charSets = [
@@ -127,6 +128,7 @@ export default function AsciiPlayground() {
 
   // 5. useEffect para renderizar ASCII a cada cambio
   useEffect(() => {
+    // Limpiar estado al no tener una entrada
     if (!inputImage && !inputText) {
       setAscii(''); // Clear ASCII if no input
       return;
@@ -142,22 +144,34 @@ export default function AsciiPlayground() {
     // Handle image input
     if (inputImage && canvasRef.current) {
       setIsProcessing(true);
+      
+      // Limpiar cualquier procesamiento previo
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d', { willReadFrequently: true }); // Important for performance
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
       if (!ctx) {
         setIsProcessing(false);
         return;
       }
+      
+      // Limpiar el canvas inmediatamente
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const img = new Image();
       // Manejar errores de CORS
       img.crossOrigin = 'anonymous';
 
       img.onload = () => {
+        // Solo procesar si la URL de la imagen coincide con el estado actual
+        // Esto evita problemas con múltiples cargas de imágenes
+        if (img.src !== inputImage) {
+          console.log('Skipping outdated image processing');
+          setIsProcessing(false);
+          return;
+        }
+        
         imageRef.current = img; // Store image ref for dimensions
 
         // Calcular dimensiones máximas basadas en el factor de resolución
-        // Aumentamos la resolución base significativamente para mostrar más caracteres
         const maxWidth = Math.floor(400 * (resolutionFactor / 100));
         const maxHeight = Math.floor(300 * (resolutionFactor / 100));
 
@@ -182,7 +196,7 @@ export default function AsciiPlayground() {
 
           // Calcular dimensiones ASCII basadas en la imagen escalada
           const asciiWidth = Math.floor(scaledWidth / cellSize);
-          const asciiHeight = Math.floor(scaledHeight / cellSize);
+          const asciiHeight = Math.floor(scaledHeight / (cellSize)); // Ajuste vertical para compensar la proporción
 
           // Get image data *after* drawing and applying filters
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -204,7 +218,7 @@ export default function AsciiPlayground() {
                 charIndex = Math.max(0, Math.min(effectiveChars.length - 1, charIndex));
               }
 
-              asciiArt += effectiveChars[charIndex] || ' '; // Add character or space
+              asciiArt += effectiveChars[charIndex] + (addSpacing ? ' ' : ''); // Añadir un espacio después de cada carácter si addSpacing está activado
             }
             asciiArt += '\n'; // New line after each row
           }
@@ -227,14 +241,16 @@ export default function AsciiPlayground() {
 
       img.src = inputImage; // Set src *after* defining onload
 
-      // Cleanup function for the object URL
+      // Cleanup function to cancel the operation if the effect re-runs
       return () => {
+        img.onload = null; // Remove handlers to prevent stale callbacks
+        img.onerror = null;
         if (inputImage && inputImage.startsWith('blob:')) {
           URL.revokeObjectURL(inputImage);
         }
       };
     }
-  }, [inputImage, inputText, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]);
+  }, [inputImage, inputText, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor, addSpacing]);
 
   // 6. Funciones de descarga
   const downloadTxt = useCallback(() => {
@@ -360,7 +376,7 @@ export default function AsciiPlayground() {
                   charIndex = Math.max(0, Math.min(effectiveChars.length - 1, charIndex));
                 }
 
-                asciiArt += effectiveChars[charIndex] || ' ';
+                asciiArt += effectiveChars[charIndex] + (addSpacing ? ' ' : '');
               }
               asciiArt += '\n';
             }
@@ -405,7 +421,7 @@ export default function AsciiPlayground() {
 
     // Limpiar el intervalo cuando se cierre la vista previa
     return () => clearInterval(previewInterval);
-  }, [inputImage, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor]);
+  }, [inputImage, cellSize, chars, brightness, contrast, invert, threshold, resolutionFactor, addSpacing]);
 
   // 8. Descargar como GIF
   const downloadAsGif = useCallback(() => {
@@ -702,6 +718,28 @@ export default function AsciiPlayground() {
           {isProcessing && (
             <p className="text-sm text-center text-accent-color/70">Procesando...</p>
           )}
+
+          {/* Espaciado entre caracteres */}
+          <div className="flex items-center mt-2">
+            <input
+              id="addSpacing"
+              type="checkbox"
+              checked={addSpacing}
+              onChange={(e) => setAddSpacing(e.target.checked)}
+              className="h-4 w-4 focus:ring-accent-color text-accent-color border-accent-color/30 rounded"
+            />
+            <label htmlFor="addSpacing" className="ml-2 block text-sm text-accent-color">
+              Add Spacing Between Characters
+            </label>
+          </div>
+
+          {/* Botón para reiniciar el ASCII */}
+          <button
+            onClick={() => setAscii('')}
+            className={`w-full inline-flex justify-center py-2 px-4 shadow-sm text-sm font-medium rounded-md transition-colors bg-red-500 text-white hover:bg-red-600`}
+          >
+            Reset ASCII
+          </button>
         </aside>
 
         <main className={`preview md:col-span-2 ${

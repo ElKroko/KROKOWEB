@@ -52,7 +52,7 @@ const AsciiHighlight: React.FC<AsciiHighlightProps> = ({
       
       {showAsciiEffects && isHovering && (
         <pre
-          className="absolute left-0 -bottom-[10rem] opacity-70 text-[10px] whitespace-pre text-accent-strong pointer-events-none z-10"
+          className="absolute left-0 -bottom-[10rem] opacity-70 text-[10px] whitespace-pre text-accent-strong pointer-events-none z-10 transition-opacity duration-300"
           style={{ fontFamily: 'monospace', maxWidth: '300px', overflow: 'hidden' }}
         >
           {asciiArt}

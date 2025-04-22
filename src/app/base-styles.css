@@ -250,99 +250,50 @@ a:hover {
   width: 100%;
 }
 
-/* Tooltip Bar Styles */
-.frame-bar-bottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 30px;
-  background-color: var(--color-primary-dark);
-  border-top: 1px solid var(--accent-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  z-index: 40;
-  opacity: 0.9;
-  transition: all 0.3s ease;
-}
-
-.frame-bar-bottom:hover {
-  opacity: 1;
-  border-top-width: 2px;
-}
-
-.frame-bar-bottom.has-message {
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
-}
-
-.tooltip-message {
-  color: var(--text-color);
-  padding: 0 1rem;
-  text-align: center;
-  transition: color 0.3s ease;
-}
-
-.frame-bar-bottom:hover .tooltip-message {
-  color: var(--accent-color);
-}
-
-/* Tooltip Container */
-.tooltip-bar-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-}
-
+/* Tooltip Styles - Simplificado */
 #tooltip-bar {
-  transition: opacity 0.3s ease;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--text-color, white);
+  backdrop-filter: blur(5px);
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--accent-color);
+  font-size: 14px;
+  line-height: 1.2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: auto;
+  max-width: 80%;
+  text-align: center;
 }
 
-#tooltip-bar.show-message {
-  opacity: 1;
+#tooltip-bar.visible {
+  opacity: 0.95;
+  transform: translateX(-50%) translateY(0);
 }
 
-#tooltip-bar:not(.show-message) {
-  opacity: 0.8;
+#tooltip-bar.hidden {
+  opacity: 0.2;
+  transform: translateX(-50%) translateY(20px);
+  pointer-events: none;
 }
 
 #tooltip-bar:hover {
   opacity: 1;
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Corner Tooltip */
-.corner-tooltip {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  z-index: 40;
-  opacity: 0.7;
-  transition: all 0.3s ease;
-  text-align: right;
-  padding: 6px 10px;
-  max-width: 320px;
-  border: 1px solid var(--text-color);
-}
-
-.corner-tooltip:hover {
-  opacity: 1;
-}
-
-.corner-tooltip .tooltip-message {
+.tooltip-message {
   color: var(--text-color);
-  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  padding: 0;
+  text-align: center;
   transition: color 0.3s ease;
-}
-
-.corner-tooltip:hover .tooltip-message {
-  color: var(--text-color);
 }
 
 /* Color transition class */
@@ -358,4 +309,156 @@ a:hover {
 /* Transition for SVG elements */
 svg path, svg rect, svg circle {
   transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* Sidebar Chat Styles */
+.sidebar-chat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(var(--accent-color-rgb, 0, 0, 0), 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  background-color: transparent; /* Fondo completamente transparente */
+  position: relative; /* Cambiado de fixed a relative para que esté dentro del sidebar */
+  z-index: 10; /* Reducido z-index para no estar por encima de todo */
+}
+
+/* Minimal Chat Styles - estilo minimalista inspirado en RuneScape */
+.minimal-chat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(var(--accent-color-rgb, 0, 0, 0), 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  background-color: transparent; /* Sin fondo */
+  position: relative;
+  z-index: 10;
+  font-family: 'Consolas', Monaco, 'Courier New', monospace;
+  flex-grow: 1; /* Ocupar todo el espacio disponible */
+  margin-top: 8px; /* Pequeño margen superior */
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  cursor: pointer;
+  background-color: transparent;
+  border-bottom: none;
+}
+
+.chat-title {
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chat-toggle {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-grow: 1; /* Ocupar todo el espacio disponible */
+  height: calc(100% - 60px); /* Altura dinámica */
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) transparent;
+  padding: 4px 0;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  min-height: 120px; /* Altura mínima */
+  max-height: 500px; /* Altura máxima */
+}
+
+.chat-closed .chat-messages {
+  height: 0;
+  min-height: 0;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+  border-radius: 20px;
+}
+
+.chat-message {
+  margin-bottom: 2px;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-input-form {
+  display: flex;
+  margin-top: 4px;
+  overflow: hidden;
+  height: 28px;
+  background-color: transparent;
+  border-top: 1px solid rgba(var(--accent-color-rgb, 0, 0, 0), 0.05);
+}
+
+.chat-closed .chat-input-form {
+  height: 0;
+  margin-top: 0;
+}
+
+.chat-input {
+  flex-grow: 1;
+  border: 1px solid rgba(var(--accent-color-rgb, 0, 0, 0), 0.1);
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  background-color: transparent;
+  color: var(--text-color);
+  font-family: 'Consolas', Monaco, 'Courier New', monospace;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.chat-input::placeholder {
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.chat-send-button {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

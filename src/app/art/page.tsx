@@ -14,7 +14,7 @@ export default function ArtPage() {
   const { accentColor } = useAccentColor();
   const { mode } = useDualMode();
   const { tracks, setCurrentTrackIndex } = useMusic();
-  
+
   // Asegurar que el elemento raíz tenga el atributo data-section="art"
   useEffect(() => {
     document.documentElement.setAttribute('data-section', 'art');
@@ -22,6 +22,36 @@ export default function ArtPage() {
       // Limpiar al desmontar
       document.documentElement.removeAttribute('data-section');
     };
+  }, []);
+
+  // ASCII art representation of the art page
+  const artAsciiArt = `
+  +----------------------------------------------------+
+  |                                                    |
+  |                       ART                          |
+  |                                                    |
+  |  +---------------+           +------------------+  |
+  |  | Music         |           |     ♫ ♪ ♫       |  |
+  |  | Compositions  |           |    /|\\           |  |
+  |  +---------------+           |   / | \\          |  |
+  |  |               |           |     |            |  |
+  |  | Visual        |           |    /|\\           |  |
+  |  | Experiments   |           |   / | \\          |  |
+  |  |               |           |     |            |  |
+  |  | Video         |           |  \\_|_/           |  |
+  |  | Productions   |           |                  |  |
+  |  |               |           |                  |  |
+  |  +---------------+           +------------------+  |
+  |                                                    |
+  +----------------------------------------------------+
+  `;
+
+  // Actualizar tooltip al montar el componente
+  useEffect(() => {
+    const tooltipBar = document.getElementById('tooltip-bar');
+    if (tooltipBar) {
+      tooltipBar.setAttribute('data-message', 'Explora mis creaciones artísticas y musicales');
+    }
   }, []);
 
   // IDs de YouTube Shorts
@@ -43,7 +73,28 @@ export default function ArtPage() {
 
   return (
     <div className="min-h-screen p-8">
-      <Typography variant="h1" className="mb-16 text-accent-color page-title-container">ART</Typography>
+      {/* Header Row - 40/60 split */}
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 mb-8">
+        {/* Left column - Title and Description (40%) */}
+        <div className="md:col-span-4 flex flex-col justify-center">
+          <Typography variant="h1" className="text-9xl tracking-widest font-light mb-6">
+            <span style={{ color: accentColor }}>ART</span>
+          </Typography>
+          <Typography variant="body" className="text-sm text-text-color/80">
+            Exploraciones artísticas a través de múltiples medios, incluyendo música, arte digital y producción audiovisual.
+            Un espacio para la experimentación estética y la expresión creativa.
+          </Typography>
+        </div>
+        
+        {/* Right column - ASCII Art Preview (60%) */}
+        <div className="md:col-span-6 relative">
+          <pre 
+            className="text-[0.5rem] leading-[0.6rem] font-mono whitespace-pre text-accent-color overflow-hidden"
+          >
+            {artAsciiArt}
+          </pre>
+        </div>
+      </div>
       
       {/* Sección de Música - AHORA PRIMERO */}
       <Section title="Music" className="mb-20">

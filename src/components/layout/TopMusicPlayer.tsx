@@ -194,7 +194,7 @@ const TopMusicPlayer: React.FC<TopMusicPlayerProps> = ({
     <div className="relative z-50">
       {/* Reproductor fijo en la parte superior */}
       <div 
-        className="fixed top-0 left-48 right-0 h-12 flex items-center transition-all duration-300"
+        className="fixed top-0 left-56 right-0 h-12 flex items-center transition-all duration-300"
         style={{ 
           backgroundColor: bgColor, 
           borderBottom: '1px solid var(--accent-color)' 
