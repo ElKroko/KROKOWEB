@@ -1,0 +1,18 @@
+[
+  {
+    "id": "69e94c70-c274-49d2-9666-fd185c4813d8",
+    "email": "admin@example.com",
+    "passwordHash": "$2b$10$8dWWM4YLdZRX.X0R5KR3eeVwZVeOxGQdo8MZ9q0LQG/vnkOAYjQCq",
+    "name": "Administrador",
+    "role": "admin",
+    "createdAt": "2025-04-22T19:45:43.675Z"
+  },
+  {
+    "id": "36971092-7d14-4263-a21b-9a5f973119d1",
+    "email": "admin123@ejemplo.com",
+    "passwordHash": "$2b$10$UJ4dPBmaD/TI2k8G69I9BeRwCqEkaA369JKBstfyA7SBAR2XYwha2",
+    "name": "Admin Test",
+    "role": "admin",
+    "createdAt": "2025-04-22T20:33:26.801Z"
+  }
+]

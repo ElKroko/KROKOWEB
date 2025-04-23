@@ -1,4 +1,5 @@
-import Image from 'next/image';
+'use client';
+
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
 import { formatDate } from '@/utils/dateUtils';
@@ -9,56 +10,37 @@ interface BlogCardProps {
 
 const BlogCard = ({ post }: BlogCardProps) => {
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
-      <div className="relative h-48 w-full">
-        <Image
-          src={post.coverImage}
-          alt={post.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover"
-        />
+    <article className="border-b border-gray-200 dark:border-gray-800 py-6 transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
+      <div className="mb-1">
+        <span className="text-sm font-mono text-gray-500 dark:text-gray-400">{formatDate(post.date)}</span>
+        {post.tags.length > 0 && (
+          <span className="mx-2 text-gray-400">·</span>
+        )}
+        <span className="text-sm font-mono text-gray-500 dark:text-gray-400">
+          {post.tags.join(', ')}
+        </span>
       </div>
-      <div className="flex flex-grow flex-col p-6">
-        <div className="mb-2 flex items-center">
-          <span className="text-sm text-gray-400">{formatDate(post.date)}</span>
-          <div className="ml-auto flex gap-2">
-            {post.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-indigo-100 px-2 py-1 text-xs text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-        <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">{post.title}</h3>
-        <p className="mb-4 line-clamp-3 flex-grow text-gray-700 dark:text-gray-300">{post.excerpt}</p>
-        <div className="flex items-center">
-          <div className="flex items-center">
-            {post.author.image && (
-              <div className="relative mr-2 h-8 w-8 overflow-hidden rounded-full">
-                <Image
-                  src={post.author.image}
-                  alt={post.author.name}
-                  fill
-                  sizes="32px"
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <span className="text-sm text-gray-700 dark:text-gray-300">{post.author.name}</span>
-          </div>
-          <Link
-            href={`/blog/${post.slug}`}
-            className="ml-auto rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
-          >
-            Leer más
-          </Link>
-        </div>
+      
+      <h3 className="text-xl font-serif mb-3 text-gray-900 dark:text-white">
+        <Link href={`/blog/${post.slug}`} className="hover:underline">
+          {post.title}
+        </Link>
+      </h3>
+      
+      <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+        {post.excerpt}
+      </p>
+      
+      <div className="flex items-center">
+        <span className="text-sm text-gray-700 dark:text-gray-300">{post.author.name}</span>
+        <Link
+          href={`/blog/${post.slug}`}
+          className="ml-auto text-sm font-mono underline text-gray-900 dark:text-gray-100"
+        >
+          Leer más →
+        </Link>
       </div>
-    </div>
+    </article>
   );
 };
 

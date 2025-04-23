@@ -1,17 +1,22 @@
-export interface Author {
-  name: string;
-  image?: string;
-  bio?: string;
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  author: string;
+  content: string;
+  summary?: string;
+  imageUrl?: string;
+  tags?: string[];
+  published: boolean;
+  createdAt: string | Date;
+  updatedAt?: string | Date;
 }
 
-export interface BlogPost {
-  slug: string;
-  title: string;
-  date: string;
-  excerpt: string;
+export interface BlogComment {
+  id: string;
+  postId: string;
+  author: string;
   content: string;
-  coverImage: string;
-  author: Author;
-  tags: string[];
-  featured?: boolean;
+  email?: string;
+  createdAt: string | Date;
 }

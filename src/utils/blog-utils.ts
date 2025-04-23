@@ -154,7 +154,24 @@ const BLOG_POSTS: BlogPost[] = [
  * Obtiene todos los posts del blog
  */
 export function getAllPosts(): BlogPost[] {
-  // Ordenar por fecha, del más reciente al más antiguo
+  // Verificar si estamos en el cliente (con acceso a localStorage)
+  if (typeof window !== 'undefined') {
+    try {
+      // Obtener posts guardados en localStorage
+      const localPosts = localStorage.getItem('blog-posts');
+      if (localPosts) {
+        const parsedLocalPosts = JSON.parse(localPosts);
+        // Combinar posts del localStorage con los posts de ejemplo
+        return [...parsedLocalPosts, ...BLOG_POSTS].sort((a, b) => 
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+      }
+    } catch (error) {
+      console.error('Error al recuperar los posts del localStorage:', error);
+    }
+  }
+  
+  // Si no hay posts en localStorage o estamos en el servidor, devolver solo los posts de ejemplo
   return [...BLOG_POSTS].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -164,7 +181,25 @@ export function getAllPosts(): BlogPost[] {
  * Obtiene un post específico por su slug
  */
 export function getPostBySlug(slug: string): BlogPost | undefined {
-  return BLOG_POSTS.find(post => post.slug === slug);
+  // Primero buscar en los posts de ejemplo
+  const postFromExample = BLOG_POSTS.find(post => post.slug === slug);
+  if (postFromExample) return postFromExample;
+  
+  // Si no se encuentra en los posts de ejemplo, buscar en localStorage
+  if (typeof window !== 'undefined') {
+    try {
+      const localPosts = localStorage.getItem('blog-posts');
+      if (localPosts) {
+        const parsedLocalPosts = JSON.parse(localPosts);
+        const postFromLocal = parsedLocalPosts.find((post: BlogPost) => post.slug === slug);
+        if (postFromLocal) return postFromLocal;
+      }
+    } catch (error) {
+      console.error('Error al recuperar el post del localStorage:', error);
+    }
+  }
+  
+  return undefined;
 }
 
 /**
